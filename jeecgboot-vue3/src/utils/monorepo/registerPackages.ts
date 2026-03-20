@@ -20,32 +20,13 @@ export function registerPackages(app: App) {
   // 仅保存 app 实例，不立即加载模块
   appInstance = app;
   app.component(
-    'superQuery',
-    createAsyncComponent(() => {
-      return import('@jeecg/online').then(mod => {
-        const str = mod.default.install.toString();
-        const importPaths = extractDynamicImportPaths(str);
-        return import(importPaths.find(path => path.includes('SuperQuery')) ?? importPaths[1])
-      });
-    })
+    'SuperQuery',
+    createAsyncComponent(() => import('@jeecg/online').then(mod => mod.SuperQuery))
   );
   app.component(
     'JOnlineSearchSelect',
-    createAsyncComponent(() => {
-      return import('@jeecg/online').then(mod => {
-        const str = mod.default.install.toString();
-        const importPaths = extractDynamicImportPaths(str);
-        debugger
-        return import(importPaths.find(path => path.includes('JOnlineSearchSelect')) ?? importPaths[0])
-      });
-    })
+    createAsyncComponent(() => import('@jeecg/online').then(mod => mod.JOnlineSearchSelect))
   );
-}
-
-function extractDynamicImportPaths(code: string): string[] {
-  // 匹配 import("...") / import('...')，保留括号内路径（包含 query 参数）
-  const matches = code.matchAll(/import\(\s*(['"])(.*?)\1\s*\)/g);
-  return Array.from(matches, (m) => m[2]).filter(Boolean);
 }
 
 /** 已加载的包缓存 */
