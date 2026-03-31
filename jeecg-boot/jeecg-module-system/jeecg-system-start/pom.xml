@@ -25,6 +25,13 @@
             <version>${jeecgboot.version}</version>
         </dependency>
         
+        <!-- WORKER WAGE 工人计费模块 -->
+        <dependency>
+            <groupId>org.jeecgframework.boot3</groupId>
+            <artifactId>hn-worker-wage</artifactId>
+            <version>${jeecgboot.version}</version>
+        </dependency>
+
         <!-- flyway 数据库自动升级 -->
         <dependency>
             <groupId>org.flywaydb</groupId>
