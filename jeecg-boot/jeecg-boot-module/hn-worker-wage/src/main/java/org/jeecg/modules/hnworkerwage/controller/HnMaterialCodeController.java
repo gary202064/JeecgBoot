@@ -15,6 +15,7 @@ import org.jeecg.modules.hnworkerwage.entity.HnProduct;
 import org.jeecg.modules.hnworkerwage.service.IHnMaterialCodeService;
 import org.jeecg.modules.hnworkerwage.service.IHnProductService;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -71,6 +72,11 @@ public class HnMaterialCodeController extends JeecgController<HnMaterialCode, IH
 	@Operation(summary = "物料编码表-添加")
 	@PostMapping(value = "/add")
 	public Result<String> add(@RequestBody HnMaterialCode hnMaterialCode) {
+		LambdaQueryWrapper<HnMaterialCode> queryWrapper = new LambdaQueryWrapper<>();
+		queryWrapper.eq(HnMaterialCode::getCode, hnMaterialCode.getCode());
+		if (hnMaterialCodeService.count(queryWrapper) > 0) {
+			return Result.error("物料编码已存在，请重新输入！");
+		}
 		hnMaterialCodeService.save(hnMaterialCode);
 		return Result.OK("添加成功！");
 	}
@@ -84,6 +90,12 @@ public class HnMaterialCodeController extends JeecgController<HnMaterialCode, IH
 	@Operation(summary = "物料编码表-编辑")
 	@PutMapping(value = "/edit")
 	public Result<String> edit(@RequestBody HnMaterialCode hnMaterialCode) {
+		LambdaQueryWrapper<HnMaterialCode> queryWrapper = new LambdaQueryWrapper<>();
+		queryWrapper.eq(HnMaterialCode::getCode, hnMaterialCode.getCode());
+		queryWrapper.ne(HnMaterialCode::getId, hnMaterialCode.getId());
+		if (hnMaterialCodeService.count(queryWrapper) > 0) {
+			return Result.error("物料编码已存在，请重新输入！");
+		}
 		hnMaterialCodeService.updateById(hnMaterialCode);
 		return Result.OK("编辑成功!");
 	}

@@ -8,6 +8,7 @@ import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.hnworkerwage.entity.HnProduct;
 import org.jeecg.modules.hnworkerwage.service.IHnProductService;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -64,6 +65,11 @@ public class HnProductController extends JeecgController<HnProduct, IHnProductSe
 	@Operation(summary = "产品表-添加")
 	@PostMapping(value = "/add")
 	public Result<String> add(@RequestBody HnProduct hnProduct) {
+		LambdaQueryWrapper<HnProduct> queryWrapper = new LambdaQueryWrapper<>();
+		queryWrapper.eq(HnProduct::getCode, hnProduct.getCode());
+		if (hnProductService.count(queryWrapper) > 0) {
+			return Result.error("产品代码已存在，请重新输入！");
+		}
 		hnProductService.save(hnProduct);
 		return Result.OK("添加成功！");
 	}
@@ -77,6 +83,12 @@ public class HnProductController extends JeecgController<HnProduct, IHnProductSe
 	@Operation(summary = "产品表-编辑")
 	@RequestMapping(value = "/edit", method = {RequestMethod.PUT,RequestMethod.POST})
 	public Result<String> edit(@RequestBody HnProduct hnProduct) {
+		LambdaQueryWrapper<HnProduct> queryWrapper = new LambdaQueryWrapper<>();
+		queryWrapper.eq(HnProduct::getCode, hnProduct.getCode());
+		queryWrapper.ne(HnProduct::getId, hnProduct.getId());
+		if (hnProductService.count(queryWrapper) > 0) {
+			return Result.error("产品代码已存在，请重新输入！");
+		}
 		hnProductService.updateById(hnProduct);
 		return Result.OK("编辑成功!");
 	}
