@@ -33,10 +33,10 @@ public class HnMaterialCode implements Serializable {
 	@Excel(name = "物料编码", width = 15)
     @Schema(description = "物料编码")
 	private java.lang.String code;
-	/**关联产品ID*/
-	@Excel(name = "关联产品ID", width = 15, dictTable = "hn_product", dicCode = "id", dicText = "name")
-    @Schema(description = "关联产品ID")
-	private java.lang.Long productId;
+	/**关联产品编码*/
+	@Excel(name = "关联产品编码", width = 15, dictTable = "hn_product", dicCode = "code", dicText = "name")
+    @Schema(description = "关联产品编码")
+	private java.lang.String productCode;
 
 	/**产品名称*/
 	@TableField(exist = false)

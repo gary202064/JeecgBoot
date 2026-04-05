@@ -9,13 +9,13 @@
         FROM
             hn_material_code hmc
         LEFT JOIN
-            hn_product hp ON hmc.product_id = hp.id
+            hn_product hp ON hmc.product_code = hp.code
         <where>
             <if test="materialCode.code != null and materialCode.code != ''">
                 AND hmc.code LIKE CONCAT('%', #{materialCode.code}, '%')
             </if>
-            <if test="materialCode.productId != null">
-                AND hmc.product_id = #{materialCode.productId}
+            <if test="materialCode.productCode != null and materialCode.productCode != ''">
+                AND hmc.product_code = #{materialCode.productCode}
             </if>
             <if test="materialCode.status != null">
                 AND hmc.status = #{materialCode.status}
