@@ -1,12 +1,19 @@
 package org.jeecg.modules.hnworkerwage.controller;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.hnworkerwage.entity.HnMaterialCode;
+import org.jeecg.modules.hnworkerwage.entity.HnProduct;
 import org.jeecg.modules.hnworkerwage.service.IHnMaterialCodeService;
+import org.jeecg.modules.hnworkerwage.service.IHnProductService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -32,11 +39,8 @@ import io.swagger.v3.oas.annotations.Operation;
 @Slf4j
 public class HnMaterialCodeController extends JeecgController<HnMaterialCode, IHnMaterialCodeService> {
 
-	private final IHnMaterialCodeService hnMaterialCodeService;
-
-	public HnMaterialCodeController(IHnMaterialCodeService hnMaterialCodeService) {
-		this.hnMaterialCodeService = hnMaterialCodeService;
-	}
+	@Autowired
+	private IHnMaterialCodeService hnMaterialCodeService;
 
 	/**
 	 * 分页列表查询

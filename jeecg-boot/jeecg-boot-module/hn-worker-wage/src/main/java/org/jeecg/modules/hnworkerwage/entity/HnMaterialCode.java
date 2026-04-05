@@ -10,6 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import java.util.Date;
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import org.jeecg.common.aspect.annotation.Dict;
 
 /**
@@ -37,6 +38,7 @@ public class HnMaterialCode implements Serializable {
     @Schema(description = "关联产品ID")
     @Dict(dictTable = "hn_product", dicCode = "id", dicText = "name")
 	private java.lang.Long productId;
+
 	/**规格描述*/
 	@Excel(name = "规格描述", width = 15)
     @Schema(description = "规格描述")
