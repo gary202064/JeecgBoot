@@ -146,4 +146,11 @@ public class HnWorkerController extends JeecgController<HnWorker, IHnWorkerServi
         return super.importExcel(request, response, HnWorker.class);
     }
 
+	@Operation(summary = "工人表-获取工人工序熟练度列表")
+	@GetMapping(value = "/getProcessAbilities")
+	public Result<java.util.List<org.jeecg.modules.hnworkerwage.entity.HnWorkerProcessAbility>> getProcessAbilities(@RequestParam(name="workerId",required=true) Long workerId) {
+		java.util.List<org.jeecg.modules.hnworkerwage.entity.HnWorkerProcessAbility> abilities = hnWorkerService.getWorkerProcessAbilities(workerId);
+		return Result.OK(abilities);
+	}
+
 }

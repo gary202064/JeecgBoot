@@ -29,6 +29,8 @@
 
 当系统需要为一条加工记录计算单价时，将严格遵循以下优先级顺序进行查找：
 
+**注意**: 熟练度（`skill_level`）从 `hn_worker_process_ability` 表中根据 `worker_id` 和 `process_id` 查询获取。
+
 1.  **查询第三级：设备专属单价 (`hn_equipment_override_price`)**
     - **条件**: `product_id` + `equipment_id` + `process_id` + `skill_level` (+ `material_code_id`)
     - 如果找到匹配的、在有效期内的、状态为启用的单价，则返回该单价，价格来源标记为 `EQUIPMENT`。
@@ -87,6 +89,41 @@ graph TD
 
 - **URL 示例**: `/worker-wage/hnProduct/list`, `/worker-wage/hnProduct/add`, `/worker-wage/hnProduct/edit`
 - **通用功能**: 支持分页查询、新增、编辑、删除、批量删除以及 Excel 导入/导出。
+
+#### 工人管理扩展接口
+
+##### 获取工人工序熟练度列表
+- **URL**: `/worker-wage/hnWorker/getProcessAbilities`
+- **Method**: `GET`
+- **Query Params**: `workerId={workerId}`
+- **Success Response (`200 OK`)**:
+  ```json
+  {
+    "success": true,
+    "message": "操作成功！",
+    "code": 200,
+    "result": [
+      {
+        "id": 1,
+        "workerId": 1,
+        "processId": 1,
+        "canFullWork": 1,
+        "skillLevel": "高级",
+        "createTime": "2026-04-03 10:00:00",
+        "updateTime": "2026-04-03 10:00:00"
+      }
+    ]
+  }
+  ```
+- **说明**: 根据工人ID查询该工人掌握的所有工序及其熟练度等级。
+
+##### 工人-工序能力管理接口
+- **分页列表查询**: `GET /worker-wage/hnWorkerProcessAbility/list`
+- **添加**: `POST /worker-wage/hnWorkerProcessAbility/add`
+- **编辑**: `PUT /worker-wage/hnWorkerProcessAbility/edit`
+- **删除**: `DELETE /worker-wage/hnWorkerProcessAbility/delete`
+- **批量删除**: `DELETE /worker-wage/hnWorkerProcessAbility/deleteBatch`
+- **通过ID查询**: `GET /worker-wage/hnWorkerProcessAbility/queryById`
 
 ### 5.2. 单价管理模块
 
@@ -263,7 +300,6 @@ CREATE TABLE `hn_worker` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `name` varchar(50) NOT NULL COMMENT '工人姓名',
   `employee_no` varchar(50) NOT NULL COMMENT '工号',
-  `skill_level` varchar(100) NOT NULL COMMENT '熟练度 (数据字典 skill_level)',
   `status` tinyint DEFAULT '1' COMMENT '状态 (1-在职, 0-离职)',
   `create_by` varchar(50) DEFAULT NULL COMMENT '创建人',
   `create_time` datetime DEFAULT NULL COMMENT '创建日期',
@@ -389,6 +425,7 @@ CREATE TABLE `hn_worker_process_ability` (
   `worker_id` bigint NOT NULL COMMENT '工人ID',
   `process_id` bigint NOT NULL COMMENT '工序ID',
   `can_full_work` tinyint DEFAULT '1' COMMENT '能力状态 (1-完全掌握, 0-部分受限)',
+  `skill_level` varchar(32) DEFAULT NULL COMMENT '熟练度 (数据字典 skill_level)',
   `create_by` varchar(50) DEFAULT NULL COMMENT '创建人',
   `create_time` datetime DEFAULT NULL COMMENT '创建日期',
   `update_by` varchar(50) DEFAULT NULL COMMENT '更新人',

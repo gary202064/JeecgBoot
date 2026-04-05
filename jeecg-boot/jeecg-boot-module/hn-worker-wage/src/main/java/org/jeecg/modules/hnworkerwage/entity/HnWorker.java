@@ -36,11 +36,7 @@ public class HnWorker implements Serializable {
 	@Excel(name = "工号", width = 15)
     @Schema(description = "工号")
 	private java.lang.String employeeNo;
-	/**熟练度*/
-	@Excel(name = "熟练度", width = 15, dictTable = "sys_dict_item", dicCode = "skill_level", dicText = "item_text")
-    @Schema(description = "熟练度")
-    @Dict(dicCode = "skill_level")
-	private java.lang.String skillLevel;
+
 	/**状态*/
 	@Excel(name = "状态", width = 15, dicCode = "work_status")
     @Schema(description = "状态")

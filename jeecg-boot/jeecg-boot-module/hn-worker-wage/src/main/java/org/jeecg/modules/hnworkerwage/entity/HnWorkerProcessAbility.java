@@ -43,6 +43,11 @@ public class HnWorkerProcessAbility implements Serializable {
     @Schema(description = "能力状态")
     @Dict(dicCode = "ability_status")
 	private java.lang.Integer canFullWork;
+	/**熟练度*/
+	@Excel(name = "熟练度", width = 15, dicCode = "skill_level")
+	@Schema(description = "熟练度")
+	@Dict(dicCode = "skill_level")
+	private java.lang.String skillLevel;
 	/**创建人*/
     @Schema(description = "创建人")
 	private java.lang.String createBy;
