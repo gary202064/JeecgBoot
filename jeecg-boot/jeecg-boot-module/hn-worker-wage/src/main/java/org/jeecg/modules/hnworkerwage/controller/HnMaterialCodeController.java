@@ -57,9 +57,8 @@ public class HnMaterialCodeController extends JeecgController<HnMaterialCode, IH
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
-		QueryWrapper<HnMaterialCode> queryWrapper = QueryGenerator.initQueryWrapper(hnMaterialCode, req.getParameterMap());
 		Page<HnMaterialCode> page = new Page<HnMaterialCode>(pageNo, pageSize);
-		IPage<HnMaterialCode> pageList = hnMaterialCodeService.page(page, queryWrapper);
+		IPage<HnMaterialCode> pageList = hnMaterialCodeService.pageList(page, hnMaterialCode);
 		return Result.OK(pageList);
 	}
 

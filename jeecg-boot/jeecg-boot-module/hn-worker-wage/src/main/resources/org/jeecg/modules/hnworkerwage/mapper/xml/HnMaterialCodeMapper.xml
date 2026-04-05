@@ -2,4 +2,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.jeecg.modules.hnworkerwage.mapper.HnMaterialCodeMapper">
 
+    <select id="pageList" resultType="org.jeecg.modules.hnworkerwage.entity.HnMaterialCode">
+        SELECT
+            hmc.*,
+            hp.name AS productName
+        FROM
+            hn_material_code hmc
+        LEFT JOIN
+            hn_product hp ON hmc.product_id = hp.id
+        <where>
+            <if test="materialCode.code != null and materialCode.code != ''">
+                AND hmc.code LIKE CONCAT('%', #{materialCode.code}, '%')
+            </if>
+            <if test="materialCode.productId != null">
+                AND hmc.product_id = #{materialCode.productId}
+            </if>
+            <if test="materialCode.status != null">
+                AND hmc.status = #{materialCode.status}
+            </if>
+        </where>
+    </select>
+
 </mapper>

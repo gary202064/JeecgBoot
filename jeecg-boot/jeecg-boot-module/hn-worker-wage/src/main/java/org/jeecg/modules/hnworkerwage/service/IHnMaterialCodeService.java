@@ -1,6 +1,8 @@
 package org.jeecg.modules.hnworkerwage.service;
 
 import org.jeecg.modules.hnworkerwage.entity.HnMaterialCode;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -11,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IHnMaterialCodeService extends IService<HnMaterialCode> {
 
+    IPage<HnMaterialCode> pageList(Page<HnMaterialCode> page, HnMaterialCode materialCode);
 }

@@ -1,17 +1,17 @@
 package org.jeecg.modules.hnworkerwage.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.jeecgframework.poi.excel.annotation.Excel;
-import java.util.Date;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import org.jeecg.common.aspect.annotation.Dict;
+import org.jeecgframework.poi.excel.annotation.Excel;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * @Description: 物料编码表
@@ -36,8 +36,11 @@ public class HnMaterialCode implements Serializable {
 	/**关联产品ID*/
 	@Excel(name = "关联产品ID", width = 15, dictTable = "hn_product", dicCode = "id", dicText = "name")
     @Schema(description = "关联产品ID")
-    @Dict(dictTable = "hn_product", dicCode = "id", dicText = "name")
 	private java.lang.Long productId;
+
+	/**产品名称*/
+	@TableField(exist = false)
+	private String productName;
 
 	/**规格描述*/
 	@Excel(name = "规格描述", width = 15)
