@@ -29,22 +29,34 @@
 
 当系统需要为一条加工记录计算单价时，将严格遵循以下优先级顺序进行查找：
 
-**注意**: 熟练度（`skill_level`）从 `hn_worker_process_ability` 表中根据 `worker_id` 和 `process_id` 查询获取。
+**核心思想**: 系统的定价引擎具备高度的灵活性，它赋予了 **物料编码** 绝对的优先权。系统会首先检查是否存在一个专门为某个物料编码设置的“一口价”，如果存在，则直接采用。若不存在，系统将启动精细的 **复合定价引擎**，该引擎会综合考虑 **设备类型**、**工序**、**工人的技能等级** 以及物料的 **尺寸区间**，共同决定一个精确的单价。如果以上两种精细化定价均未找到，系统将回退到最通用的、基于 **产品** 的基础定价，确保所有记录都有一个计算依据。
 
-1.  **查询第三级：设备专属单价 (`hn_equipment_override_price`)**
-    - **条件**: `product_id` + `equipment_id` + `process_id` + `skill_level` (+ `material_code_id`)
-    - 如果找到匹配的、在有效期内的、状态为启用的单价，则返回该单价，价格来源标记为 `EQUIPMENT`。
+1.  **第一级 (最高)：物料覆盖单价 (`hn_material_override_price`)**
+    -   **作用**: 为特定物料编码提供一个全局最高优先级的特殊价格。
+    -   **输入**: `product_id`, `process_id`, `skill_level`, `material_code_id`
+    -   **查询条件**: `product_id` + `process_id` + `skill_level` + `material_code_id`
+    -   **逻辑**: 如果 `hn_material_override_price` 表中找到完全匹配的记录，则返回该单价，查询结束。
 
-2.  **查询第二级：物料覆盖单价 (`hn_material_override_price`)**
-    - **条件**: `product_id` + `type_id` + `process_id` + `skill_level` + `material_code_id`
-    - 如果找到匹配的、在有效期内的、状态为启用的单价，则返回该单价，价格来源标记为 `MATERIAL`。
+2.  **第二级：复合定价 (`hn_complex_price`)**
+    -   **作用**: 若物料无特殊“一口价”，则启动复合定价引擎，综合多维度计算价格。
+    -   **输入**: `material_code_id`, `process_id`, `equipment_id`, `worker_id`
+    -   **逻辑**:
+        1.  **获取物料尺寸**: 使用 `material_code_id` 去 `hn_material_dimension` 表查出该物料的 `dimension_name` 和 `dimension_value`。
+        2.  **获取设备类型**: 使用 `equipment_id` 去 `hn_equipment` 表查出 `type_id`。
+        3.  **获取技能等级**: 使用 `worker_id` 和 `process_id` 去 `hn_worker_process_ability` 表查出 `skill_level`。
+        4.  **查询价格**: 在 `hn_complex_price` 表中根据以下全部条件进行匹配：
+            -   `process_id` = 输入的 `process_id`
+            -   `equipment_type` = 第2步获取的设备类型
+            -   `skill_level` = 第3步获取的技能等级
+            -   `dimension_name` = 第1步获取的尺寸维度
+            -   `range_min` <= 第1步获取的尺寸值 < `range_max`
+        5.  如果找到匹配的单价，则返回该单价，查询结束。
 
-3.  **查询第一级：基础单价 (`hn_base_price`)**
-    - **条件**: `product_id` + `type_id` + `process_id` + `skill_level`
-    - 如果找到匹配的、在有效期内的、状态为启用的单价，则返回该单价，价格来源标记为 `BASE`。
-
-4.  **未找到单价**
-    - 如果三级查询均未找到单价，则该记录的计算状态标记为 `NO_PRICE`，价格来源为 `NONE`，等待财务人员后续处理（如手工补录）。
+3.  **第三级 (最低)：基础单价 (`hn_base_price`)**
+    -   **作用**: 作为保底定价，确保所有记录都有一个计算依据。
+    -   **输入**: `product_id`, `process_id`, `skill_level`
+    -   **查询条件**: `product_id` + `process_id` + `skill_level`
+    -   **逻辑**: 如果以上两级均未找到单价，则在 `hn_base_price` 表中根据此条件查找基础单价。
 
 ### 4.2. 月度数据导入与异步计算流程
 
@@ -249,24 +261,28 @@ CREATE TABLE `hn_equipment` (
 CREATE TABLE `hn_product` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `name` varchar(100) NOT NULL COMMENT '产品名称',
-  `code` varchar(50) DEFAULT NULL COMMENT '产品代码',
+  `code` varchar(50) NOT NULL COMMENT '产品代码',
+  `product_level` varchar(50) DEFAULT NULL COMMENT '产品等级',
+  `level_description` varchar(200) DEFAULT NULL COMMENT '等级描述',
   `status` tinyint DEFAULT '1' COMMENT '状态 (1-正常, 0-停用)',
   `create_by` varchar(50) DEFAULT NULL COMMENT '创建人',
   `create_time` datetime DEFAULT NULL COMMENT '创建日期',
   `update_by` varchar(50) DEFAULT NULL COMMENT '更新人',
   `update_time` datetime DEFAULT NULL COMMENT '更新日期',
   `sys_org_code` varchar(64) DEFAULT NULL COMMENT '所属部门',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_product_code` (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='产品表';
 ```
 
-#### 4. 物料编码表 (`hn_material_code`)
+#### 6. 物料编码表 (`hn_material_code`)
 ```sql
 CREATE TABLE `hn_material_code` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `code` varchar(100) NOT NULL COMMENT '物料编码',
   `product_id` bigint NOT NULL COMMENT '关联产品ID',
-  `spec_desc` varchar(200) DEFAULT NULL COMMENT '规格描述',
+  `spec` varchar(200) DEFAULT NULL COMMENT '规格型号',
+  `description` varchar(200) DEFAULT NULL COMMENT '物料描述',
   `status` tinyint DEFAULT '1' COMMENT '状态 (1-正常, 0-停用)',
   `create_by` varchar(50) DEFAULT NULL COMMENT '创建人',
   `create_time` datetime DEFAULT NULL COMMENT '创建日期',
@@ -278,7 +294,7 @@ CREATE TABLE `hn_material_code` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='物料编码表';
 ```
 
-#### 5. 工序表 (`hn_process`)
+#### 7. 工序表 (`hn_process`)
 ```sql
 CREATE TABLE `hn_process` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
@@ -316,7 +332,6 @@ CREATE TABLE `hn_worker` (
 CREATE TABLE `hn_base_price` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `product_id` bigint NOT NULL COMMENT '产品ID',
-  `type_id` varchar(100) NOT NULL COMMENT '设备类型 (数据字典 equipment_type)',
   `process_id` bigint NOT NULL COMMENT '工序ID',
   `skill_level` varchar(100) NOT NULL COMMENT '熟练度 (数据字典 skill_level)',
   `unit_price` decimal(10,4) NOT NULL COMMENT '单价',
@@ -336,7 +351,6 @@ CREATE TABLE `hn_base_price` (
 CREATE TABLE `hn_material_override_price` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `product_id` bigint NOT NULL COMMENT '产品ID',
-  `type_id` varchar(100) NOT NULL COMMENT '设备类型 (数据字典 equipment_type)',
   `process_id` bigint NOT NULL COMMENT '工序ID',
   `skill_level` varchar(100) NOT NULL COMMENT '熟练度 (数据字典 skill_level)',
   `material_code_id` bigint NOT NULL COMMENT '物料编码ID',
@@ -352,28 +366,44 @@ CREATE TABLE `hn_material_override_price` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='物料覆盖单价表 (第2级)';
 ```
 
-#### 9. 设备专属单价表 (`hn_equipment_override_price`)
+#### 9. 物料尺寸定义表 (`hn_material_dimension`)
 ```sql
-CREATE TABLE `hn_equipment_override_price` (
+CREATE TABLE `hn_material_dimension` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `product_id` bigint NOT NULL COMMENT '产品ID',
-  `equipment_id` bigint NOT NULL COMMENT '设备ID',
-  `process_id` bigint NOT NULL COMMENT '工序ID',
-  `skill_level` varchar(100) NOT NULL COMMENT '熟练度 (数据字典 skill_level)',
-  `material_code_id` bigint DEFAULT NULL COMMENT '物料编码ID (可选)',
-  `unit_price` decimal(10,4) NOT NULL COMMENT '单价',
-  `effective_date` date NOT NULL COMMENT '生效日期',
-  `status` tinyint DEFAULT '1' COMMENT '状态 (1-启用, 0-禁用)',
+  `material_code_id` bigint NOT NULL COMMENT '关联的物料编码ID',
+  `dimension_name` varchar(50) NOT NULL COMMENT '尺寸维度名称',
+  `dimension_value` decimal(10,2) NOT NULL COMMENT '该物料的具体尺寸值',
+  `create_by` varchar(50) DEFAULT NULL COMMENT '创建人',
+  `create_time` datetime DEFAULT NULL COMMENT '创建日期',
+  `update_by` varchar(50) DEFAULT NULL COMMENT '更新人',
+  `update_time` datetime DEFAULT NULL COMMENT '更新日期',
+  `sys_org_code` varchar(64) DEFAULT NULL COMMENT '所属部门',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_material_dimension` (`material_code_id`, `dimension_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='物料尺寸定义表';
+```
+
+#### 10. 复合定价表 (`hn_complex_price`)
+```sql
+CREATE TABLE `hn_complex_price` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `process_id` bigint NOT NULL COMMENT '关联的工序ID',
+  `equipment_type` varchar(100) NOT NULL COMMENT '设备类型 (数据字典)',
+  `skill_level` varchar(100) NOT NULL COMMENT '技能等级 (数据字典)',
+  `dimension_name` varchar(50) NOT NULL COMMENT '尺寸维度名称',
+  `range_min` decimal(10,2) NOT NULL COMMENT '尺寸区间的最小值（包含）',
+  `range_max` decimal(10,2) NOT NULL COMMENT '尺寸区间的最大值（不包含）',
+  `unit_price` decimal(10,4) NOT NULL COMMENT '在此组合下的加工单价',
   `create_by` varchar(50) DEFAULT NULL COMMENT '创建人',
   `create_time` datetime DEFAULT NULL COMMENT '创建日期',
   `update_by` varchar(50) DEFAULT NULL COMMENT '更新人',
   `update_time` datetime DEFAULT NULL COMMENT '更新日期',
   `sys_org_code` varchar(64) DEFAULT NULL COMMENT '所属部门',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='设备专属单价表 (第3级)';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='复合定价表';
 ```
 
-#### 10. 导入批次表 (`hn_import_batch`)
+#### 11. 导入批次表 (`hn_import_batch`)
 ```sql
 CREATE TABLE `hn_import_batch` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
