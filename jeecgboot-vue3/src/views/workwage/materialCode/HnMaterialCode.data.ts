@@ -39,10 +39,9 @@ export const searchFormSchema: FormSchema[] = [
   {
     label: '关联产品',
     field: 'productId',
-    component: 'JPopup',
+    component: 'JSearchSelect',
     componentProps: {
-      code: 'hn_product',
-      fieldConfig: [{ source: 'id', target: 'productId' }],
+      dict: 'hn_product,name,id',
     },
     colProps: { span: 6 },
   },
@@ -73,21 +72,11 @@ export const formSchema: FormSchema[] = [
     label: '关联产品',
     field: 'productId',
     required: true,
-    component: 'JPopup',
+    component: 'JSearchSelect',
     componentProps: {
-      code: 'hn_product',
+      dict: 'hn_product,name,id',
       placeholder: '请选择关联产品',
-      fieldConfig: [
-        { source: 'name', target: 'productName' },
-        { source: 'id', target: 'productId' },
-      ],
     },
-  },
-  {
-    label: '',
-    field: 'productName',
-    component: 'Input',
-    show: false,
   },
   {
     label: '规格描述',
@@ -106,6 +95,6 @@ export const formSchema: FormSchema[] = [
 
 export const superQuerySchema = {
   code: { title: '物料编码', order: 0, view: 'text' },
-  productId: { title: '关联产品', order: 1, view: 'popup', code: 'hn_product', field: 'name', orgFields: 'id', destFields: 'productId' },
+  productId: { title: '关联产品', order: 1, view: 'sel_search', dictTable: 'hn_product', dictText: 'name', dictCode: 'id' },
   status: { title: '状态', order: 2, view: 'list', dictCode: 'status' },
 };
