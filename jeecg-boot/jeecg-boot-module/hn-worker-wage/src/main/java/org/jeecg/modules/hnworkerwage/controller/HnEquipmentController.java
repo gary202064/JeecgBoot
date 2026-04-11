@@ -54,6 +54,7 @@ public class HnEquipmentController extends JeecgController<HnEquipment, IHnEquip
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
 		QueryWrapper<HnEquipment> queryWrapper = QueryGenerator.initQueryWrapper(hnEquipment, req.getParameterMap());
+		queryWrapper.orderByAsc("equipment_no");
 		Page<HnEquipment> page = new Page<HnEquipment>(pageNo, pageSize);
 		IPage<HnEquipment> pageList = hnEquipmentService.page(page, queryWrapper);
 		return Result.OK(pageList);

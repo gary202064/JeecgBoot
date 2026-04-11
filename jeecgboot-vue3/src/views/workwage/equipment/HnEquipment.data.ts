@@ -14,8 +14,6 @@ export const columns: BasicColumn[] = [
     title: '设备编号',
     align: 'center',
     dataIndex: 'equipmentNo',
-    sorter: true,
-    defaultSortOrder: 'ascend',
   },
   {
     title: '设备类型',
