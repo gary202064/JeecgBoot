@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `hn_product` (
   `sys_org_code` varchar(64)  DEFAULT NULL COMMENT '所属部门',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_product_code` (`code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='产品表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='产品表';
 
 -- ---------------------------------------------------------------------------
 -- 表2: hn_process（工序表）
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `hn_process` (
   `sys_org_code` varchar(64)  DEFAULT NULL COMMENT '所属部门',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_process_code` (`code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='工序表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='工序表';
 
 -- ---------------------------------------------------------------------------
 -- 表3: hn_equipment（设备表）
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `hn_equipment` (
   `sys_org_code`    varchar(64)  DEFAULT NULL COMMENT '所属部门',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_equipment_no` (`equipment_no`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='设备表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='设备表';
 
 -- ---------------------------------------------------------------------------
 -- 表4: hn_worker（工人表）
@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS `hn_worker` (
   `sys_org_code` varchar(64) DEFAULT NULL COMMENT '所属部门',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_employee_no` (`employee_no`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='工人表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='工人表';
 
 -- ---------------------------------------------------------------------------
 -- 表5: hn_material_code（物料编码表）
@@ -102,7 +102,7 @@ CREATE TABLE IF NOT EXISTS `hn_material_code` (
   `sys_org_code` varchar(64)  DEFAULT NULL COMMENT '所属部门',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_material_code` (`code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='物料编码表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='物料编码表';
 
 -- ---------------------------------------------------------------------------
 -- 表6: hn_material_dimension（物料尺寸定义表）
@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS `hn_material_dimension` (
   `sys_org_code`     varchar(64)   DEFAULT NULL COMMENT '所属部门',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_material_dimension` (`material_code_id`, `dimension_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='物料尺寸定义表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='物料尺寸定义表';
 
 -- ---------------------------------------------------------------------------
 -- 表7: hn_type_process（设备类型-工序关联表）
@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS `hn_type_process` (
   `sys_org_code`   varchar(64)  DEFAULT NULL COMMENT '所属部门',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_type_process` (`equipment_type`, `process_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='设备类型-工序关联表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='设备类型-工序关联表';
 
 -- ---------------------------------------------------------------------------
 -- 表8: hn_worker_process_ability（工人-工序能力表）
@@ -153,7 +153,7 @@ CREATE TABLE IF NOT EXISTS `hn_worker_process_ability` (
   `sys_org_code`  varchar(64)  DEFAULT NULL COMMENT '所属部门',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_worker_process` (`worker_id`, `process_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='工人-工序能力表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='工人-工序能力表';
 
 -- ---------------------------------------------------------------------------
 -- 表9: hn_base_price（基础单价表）
@@ -174,7 +174,7 @@ CREATE TABLE IF NOT EXISTS `hn_base_price` (
   `sys_org_code`   varchar(64)   DEFAULT NULL COMMENT '所属部门',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_base_price` (`product_id`, `equipment_type`, `process_id`, `skill_level`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='基础单价表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='基础单价表';
 
 -- ---------------------------------------------------------------------------
 -- 表10: hn_complex_price（复合定价表）
@@ -195,7 +195,7 @@ CREATE TABLE IF NOT EXISTS `hn_complex_price` (
   `sys_org_code`   varchar(64)   DEFAULT NULL COMMENT '所属部门',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_complex_price` (`process_id`, `equipment_type`, `skill_level`, `dimension_name`, `range_min`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='复合定价表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='复合定价表';
 
 -- ---------------------------------------------------------------------------
 -- 表11: hn_material_override_price（物料覆盖单价表）
@@ -217,7 +217,7 @@ CREATE TABLE IF NOT EXISTS `hn_material_override_price` (
   `sys_org_code`     varchar(64)   DEFAULT NULL COMMENT '所属部门',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_override_price` (`material_code_id`, `product_id`, `equipment_type`, `process_id`, `skill_level`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='物料覆盖单价表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='物料覆盖单价表';
 
 -- ---------------------------------------------------------------------------
 -- 表12: hn_price_change_log（单价变更日志表）
@@ -235,7 +235,7 @@ CREATE TABLE IF NOT EXISTS `hn_price_change_log` (
   `update_time`    datetime      DEFAULT NULL COMMENT '更新日期',
   `sys_org_code`   varchar(64)   DEFAULT NULL COMMENT '所属部门',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='单价变更日志表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='单价变更日志表';
 
 -- ---------------------------------------------------------------------------
 -- 表13: hn_import_batch（导入批次表）
@@ -254,7 +254,7 @@ CREATE TABLE IF NOT EXISTS `hn_import_batch` (
   `update_time`   datetime     DEFAULT NULL COMMENT '更新日期',
   `sys_org_code`  varchar(64)  DEFAULT NULL COMMENT '所属部门',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='导入批次表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='导入批次表';
 
 -- ---------------------------------------------------------------------------
 -- 表14: hn_monthly_record（月度加工记录表）
@@ -280,7 +280,7 @@ CREATE TABLE IF NOT EXISTS `hn_monthly_record` (
   `update_time`      datetime      DEFAULT NULL COMMENT '更新日期',
   `sys_org_code`     varchar(64)   DEFAULT NULL COMMENT '所属部门',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='月度加工记录表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='月度加工记录表';
 
 -- ---------------------------------------------------------------------------
 -- 表15: hn_monthly_summary（月度汇总表）
@@ -303,7 +303,7 @@ CREATE TABLE IF NOT EXISTS `hn_monthly_summary` (
   `update_time`      datetime      DEFAULT NULL COMMENT '更新日期',
   `sys_org_code`     varchar(64)   DEFAULT NULL COMMENT '所属部门',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='月度汇总表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='月度汇总表';
 
 
 -- =============================================================================
