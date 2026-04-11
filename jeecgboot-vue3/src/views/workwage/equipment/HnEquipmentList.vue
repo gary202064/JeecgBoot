@@ -66,6 +66,10 @@
       beforeFetch: (params) => {
         return Object.assign(params, queryParam);
       },
+      defaultSort: {
+        columnKey: 'equipmentNo',
+        order: 'ascend',
+      },
     },
     exportConfig: {
       name: '设备管理',

@@ -33,6 +33,7 @@
     if (unref(isUpdate)) {
       await setFieldsValue({
         ...data.record,
+        status: data.record.status != null ? String(data.record.status) : undefined,
       });
     }
     setProps({ disabled: !data?.showFooter });
