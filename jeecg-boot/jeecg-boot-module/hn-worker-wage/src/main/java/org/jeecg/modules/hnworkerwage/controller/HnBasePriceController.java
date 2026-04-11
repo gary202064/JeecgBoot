@@ -1,4 +1,4 @@
-﻿﻿package org.jeecg.modules.hnworkerwage.controller;
+package org.jeecg.modules.hnworkerwage.controller;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
