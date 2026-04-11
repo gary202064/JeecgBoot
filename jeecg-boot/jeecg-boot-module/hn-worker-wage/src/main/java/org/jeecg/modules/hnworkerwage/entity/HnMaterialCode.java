@@ -39,10 +39,14 @@ public class HnMaterialCode implements Serializable {
     @Dict(dictTable = "hn_product", dicCode = "id", dicText = "name")
 	private java.lang.Long productId;
 
-	/**规格描述*/
-	@Excel(name = "规格描述", width = 15)
-    @Schema(description = "规格描述")
-	private java.lang.String specDesc;
+	/**规格型号*/
+	@Excel(name = "规格型号", width = 15)
+    @Schema(description = "规格型号")
+	private java.lang.String spec;
+	/**物料描述*/
+	@Excel(name = "物料描述", width = 15)
+    @Schema(description = "物料描述")
+	private java.lang.String description;
 	/**状态*/
 	@Excel(name = "状态", width = 15, dicCode = "status")
     @Schema(description = "状态")

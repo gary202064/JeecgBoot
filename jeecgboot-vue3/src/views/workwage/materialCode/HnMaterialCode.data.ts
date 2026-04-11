@@ -13,9 +13,14 @@ export const columns: BasicColumn[] = [
     dataIndex: 'productId_dictText',
   },
   {
-    title: '规格描述',
+    title: '规格型号',
     align: 'center',
-    dataIndex: 'specDesc',
+    dataIndex: 'spec',
+  },
+  {
+    title: '物料描述',
+    align: 'center',
+    dataIndex: 'description',
   },
   {
     title: '状态',
@@ -79,10 +84,16 @@ export const formSchema: FormSchema[] = [
     },
   },
   {
-    label: '规格描述',
-    field: 'specDesc',
+    label: '规格型号',
+    field: 'spec',
+    component: 'Input',
+    componentProps: { placeholder: '请输入规格型号' },
+  },
+  {
+    label: '物料描述',
+    field: 'description',
     component: 'InputTextArea',
-    componentProps: { placeholder: '请输入规格描述' },
+    componentProps: { placeholder: '请输入物料描述' },
   },
   {
     label: '状态',
@@ -96,5 +107,7 @@ export const formSchema: FormSchema[] = [
 export const superQuerySchema = {
   code: { title: '物料编码', order: 0, view: 'text' },
   productId: { title: '关联产品', order: 1, view: 'sel_search', dictTable: 'hn_product', dictText: 'name', dictCode: 'id' },
-  status: { title: '状态', order: 2, view: 'list', dictCode: 'status' },
+  spec: { title: '规格型号', order: 2, view: 'text' },
+  description: { title: '物料描述', order: 3, view: 'text' },
+  status: { title: '状态', order: 4, view: 'list', dictCode: 'status' },
 };

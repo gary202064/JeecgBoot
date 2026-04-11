@@ -4,18 +4,27 @@
 
     <select id="pageList" resultType="org.jeecg.modules.hnworkerwage.entity.HnMaterialCode">
         SELECT
-            hmc.*,
-            hp.name AS productName
+            hmc.id,
+            hmc.code,
+            hmc.product_id,
+            hmc.spec,
+            hmc.description,
+            hmc.status,
+            hmc.create_by,
+            hmc.create_time,
+            hmc.update_by,
+            hmc.update_time,
+            hmc.sys_org_code
         FROM
             hn_material_code hmc
         LEFT JOIN
-            hn_product hp ON hmc.product_code = hp.code
+            hn_product hp ON hmc.product_id = hp.id
         <where>
             <if test="materialCode.code != null and materialCode.code != ''">
                 AND hmc.code LIKE CONCAT('%', #{materialCode.code}, '%')
             </if>
-            <if test="materialCode.productCode != null and materialCode.productCode != ''">
-                AND hmc.product_code = #{materialCode.productCode}
+            <if test="materialCode.productId != null">
+                AND hmc.product_id = #{materialCode.productId}
             </if>
             <if test="materialCode.status != null">
                 AND hmc.status = #{materialCode.status}
