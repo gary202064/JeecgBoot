@@ -29,6 +29,10 @@ public class HnEquipment implements Serializable {
 	@TableId(type = IdType.AUTO)
     @Schema(description = "主键")
 	private java.lang.Long id;
+	/**设备名称*/
+	@Excel(name = "设备名称", width = 20)
+    @Schema(description = "设备名称")
+	private java.lang.String equipmentName;
 	/**设备编号*/
 	@Excel(name = "设备编号", width = 15)
     @Schema(description = "设备编号")

@@ -6,6 +6,11 @@ import { render } from '/@/utils/common/renderUtils';
 // 列表列定义
 export const columns: BasicColumn[] = [
   {
+    title: '设备名称',
+    align: 'center',
+    dataIndex: 'equipmentName',
+  },
+  {
     title: '设备编号',
     align: 'center',
     dataIndex: 'equipmentNo',
@@ -34,6 +39,12 @@ export const columns: BasicColumn[] = [
 
 // 查询表单 Schema
 export const searchFormSchema: FormSchema[] = [
+  {
+    label: '设备名称',
+    field: 'equipmentName',
+    component: 'JInput',
+    colProps: { span: 6 },
+  },
   {
     label: '设备编号',
     field: 'equipmentNo',
@@ -72,6 +83,13 @@ export const formSchema: FormSchema[] = [
     show: false,
   },
   {
+    label: '设备名称',
+    field: 'equipmentName',
+    required: true,
+    component: 'Input',
+    componentProps: { placeholder: '请输入设备名称' },
+  },
+  {
     label: '设备编号',
     field: 'equipmentNo',
     required: true,
@@ -103,8 +121,9 @@ export const formSchema: FormSchema[] = [
 
 // 高级查询配置
 export const superQuerySchema = {
-  equipmentNo: { title: '设备编号', order: 0, view: 'text' },
-  equipmentType: { title: '设备类型', order: 1, view: 'list', dictCode: 'equipment_type' },
-  productionLine: { title: '所属产线', order: 2, view: 'list', dictCode: 'production_line' },
-  status: { title: '状态', order: 3, view: 'list', dictCode: 'status' },
+  equipmentName: { title: '设备名称', order: 0, view: 'text' },
+  equipmentNo: { title: '设备编号', order: 1, view: 'text' },
+  equipmentType: { title: '设备类型', order: 2, view: 'list', dictCode: 'equipment_type' },
+  productionLine: { title: '所属产线', order: 3, view: 'list', dictCode: 'production_line' },
+  status: { title: '状态', order: 4, view: 'list', dictCode: 'status' },
 };
