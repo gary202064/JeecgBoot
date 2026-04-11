@@ -2,6 +2,7 @@ package org.jeecg.modules.hnworkerwage.entity;
 
 import java.io.Serializable;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -36,6 +37,12 @@ public class HnProduct implements Serializable {
 	@Excel(name = "产品代码", width = 15)
     @Schema(description = "产品代码")
 	private java.lang.String code;
+	/**产品原材料类型*/
+	@Excel(name = "产品原材料类型", width = 15, dicCode = "material_type")
+    @Schema(description = "产品原材料类型 (数据字典 material_type，如：毛胚、半成品、成品)")
+    @Dict(dicCode = "material_type")
+	@TableField("product_level")
+	private java.lang.String productLevel;
 	/**状态*/
 	@Excel(name = "状态", width = 15, dicCode = "status")
     @Schema(description = "状态")

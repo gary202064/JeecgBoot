@@ -1,5 +1,6 @@
-package org.jeecg.modules.hnworkerwage.controller;
+﻿﻿package org.jeecg.modules.hnworkerwage.controller;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -52,8 +53,16 @@ public class HnBasePriceController extends JeecgController<HnBasePrice, IHnBaseP
 	public Result<IPage<HnBasePrice>> queryPageList(HnBasePrice hnBasePrice,
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
+								   @RequestParam(name="minPrice", required=false) BigDecimal minPrice,
+								   @RequestParam(name="maxPrice", required=false) BigDecimal maxPrice,
 								   HttpServletRequest req) {
 		QueryWrapper<HnBasePrice> queryWrapper = QueryGenerator.initQueryWrapper(hnBasePrice, req.getParameterMap());
+		if (minPrice != null) {
+			queryWrapper.ge("unit_price", minPrice);
+		}
+		if (maxPrice != null) {
+			queryWrapper.le("unit_price", maxPrice);
+		}
 		Page<HnBasePrice> page = new Page<HnBasePrice>(pageNo, pageSize);
 		IPage<HnBasePrice> pageList = hnBasePriceService.page(page, queryWrapper);
 		return Result.OK(pageList);

@@ -2,6 +2,7 @@ package org.jeecg.modules.hnworkerwage.entity;
 
 import java.io.Serializable;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -33,15 +34,17 @@ public class HnEquipment implements Serializable {
     @Schema(description = "设备编号")
 	private java.lang.String equipmentNo;
 	/**设备类型*/
-	@Excel(name = "设备类型", width = 15, dictTable = "sys_dict_item", dicCode = "equipment_type", dicText = "item_text")
+	@Excel(name = "设备类型", width = 15, dicCode = "equipment_type")
     @Schema(description = "设备类型")
     @Dict(dicCode = "equipment_type")
-	private java.lang.String typeId;
+	@TableField("equipment_type")
+	private java.lang.String equipmentType;
 	/**所属产线*/
-	@Excel(name = "所属产线", width = 15, dictTable = "sys_dict_item", dicCode = "production_line", dicText = "item_text")
+	@Excel(name = "所属产线", width = 15, dicCode = "production_line")
     @Schema(description = "所属产线")
     @Dict(dicCode = "production_line")
-	private java.lang.String lineId;
+	@TableField("production_line")
+	private java.lang.String productionLine;
 	/**状态*/
 	@Excel(name = "状态", width = 15, dicCode = "status")
     @Schema(description = "状态")
