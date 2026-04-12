@@ -342,8 +342,10 @@ CREATE TABLE `hn_complex_price` (
   `equipment_type` varchar(100)  NOT NULL COMMENT '设备类型 (数据字典 equipment_type)',
   `skill_level`    varchar(100)  DEFAULT NULL COMMENT '技能等级 (数据字典 skill_level)',
   `dimension_name` varchar(100)  NOT NULL COMMENT '参与定价的尺寸维度名称（如：长度）',
-  `range_min`      decimal(10,2) NOT NULL COMMENT '尺寸区间最小值（包含）',
-  `range_max`      decimal(10,2) NOT NULL COMMENT '尺寸区间最大值（不包含）',
+  `range_min_op`   varchar(2)    DEFAULT NULL COMMENT '最小值运算符 (>=, >)，NULL表示无下限',
+  `range_min`      decimal(10,2) DEFAULT NULL COMMENT '尺寸区间最小值，NULL表示无下限',
+  `range_max_op`   varchar(2)    DEFAULT NULL COMMENT '最大值运算符 (<=, <)，NULL表示无上限',
+  `range_max`      decimal(10,2) DEFAULT NULL COMMENT '尺寸区间最大值，NULL表示无上限',
   `unit_price`     decimal(10,4) NOT NULL COMMENT '此组合下的加工单价',
   `create_by`      varchar(50)   DEFAULT NULL COMMENT '创建人',
   `create_time`    datetime      DEFAULT NULL COMMENT '创建日期',
@@ -355,7 +357,18 @@ CREATE TABLE `hn_complex_price` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='复合定价表';
 ```
 
-> **业务说明**：当某物料在某工序下的尺寸（由 `hn_material_dimension` 定义）落入某区间 `[range_min, range_max)` 时，使用该行定义的单价，优先级高于 `hn_base_price`。
+> **业务说明**：当某物料在某工序下的尺寸（由 `hn_material_dimension` 定义）满足区间条件时，使用该行定义的单价，优先级高于 `hn_base_price`。
+> 
+> 区间条件由 `range_min_op`、`range_min`、`range_max_op`、`range_max` 四个字段共同定义，支持以下灵活组合：
+> 
+> | 表达式示例 | range_min_op | range_min | range_max_op | range_max |
+> |---|---|---|---|---|
+> | x < 76.5 | NULL | NULL | `<` | 76.5 |
+> | 76.5 <= x <= 90 | `>=` | 76.5 | `<=` | 90 |
+> | 170 < x <= 200 | `>` | 170 | `<=` | 200 |
+> | x > 200 | `>` | 200 | NULL | NULL |
+> 
+> 运算符字段为 NULL 时表示该侧无界（无下限或无上限）。
 
 ---
 
@@ -501,7 +514,8 @@ CREATE TABLE `hn_monthly_summary` (
 
 优先级 2：复合定价 (hn_complex_price)
     匹配条件：process_id + equipment_type + skill_level + dimension_name
-    尺寸命中条件：hn_material_dimension.dimension_value ∈ [range_min, range_max)
+    尺寸命中条件：由 range_min_op/range_min/range_max_op/range_max 共同定义区间
+                  支持 >=、>、<=、< 四种运算符，运算符为 NULL 时表示该侧无界
 
 优先级 3（最低）：基础单价 (hn_base_price)
     匹配条件：product_id + equipment_type + process_id + skill_level

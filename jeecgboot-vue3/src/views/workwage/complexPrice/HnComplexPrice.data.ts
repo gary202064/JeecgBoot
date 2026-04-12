@@ -1,13 +1,39 @@
 import { BasicColumn } from '/@/components/Table';
 import { FormSchema } from '/@/components/Table';
 
+// 运算符选项
+const minOpOptions = [
+  { label: '>= （大于等于）', value: '>=' },
+  { label: '>  （大于）', value: '>' },
+];
+const maxOpOptions = [
+  { label: '<= （小于等于）', value: '<=' },
+  { label: '<  （小于）', value: '<' },
+];
+
 export const columns: BasicColumn[] = [
   { title: '工序', align: 'center', dataIndex: 'processId_dictText' },
   { title: '设备类型', align: 'center', dataIndex: 'equipmentType_dictText' },
   { title: '技能等级', align: 'center', dataIndex: 'skillLevel_dictText' },
   { title: '尺寸维度', align: 'center', dataIndex: 'dimensionName' },
-  { title: '区间最小值', align: 'center', dataIndex: 'rangeMin' },
-  { title: '区间最大值', align: 'center', dataIndex: 'rangeMax' },
+  {
+    title: '区间下限',
+    align: 'center',
+    dataIndex: 'rangeMin',
+    customRender: ({ record }) => {
+      if (record.rangeMinOp && record.rangeMin != null) return `${record.rangeMinOp} ${record.rangeMin}`;
+      return '无下限';
+    },
+  },
+  {
+    title: '区间上限',
+    align: 'center',
+    dataIndex: 'rangeMax',
+    customRender: ({ record }) => {
+      if (record.rangeMaxOp && record.rangeMax != null) return `${record.rangeMaxOp} ${record.rangeMax}`;
+      return '无上限';
+    },
+  },
   { title: '单价', align: 'center', dataIndex: 'unitPrice' },
 ];
 
@@ -24,8 +50,30 @@ export const formSchema: FormSchema[] = [
   { label: '设备类型', field: 'equipmentType', required: true, component: 'JDictSelectTag', componentProps: { dictCode: 'equipment_type', placeholder: '请选择设备类型' } },
   { label: '技能等级', field: 'skillLevel', required: true, component: 'JDictSelectTag', componentProps: { dictCode: 'skill_level', placeholder: '请选择技能等级' } },
   { label: '尺寸维度', field: 'dimensionName', required: true, component: 'Input', componentProps: { placeholder: '请输入尺寸维度名称' } },
-  { label: '区间最小值', field: 'rangeMin', required: true, component: 'InputNumber', componentProps: { placeholder: '请输入区间最小值（包含）', precision: 2, min: 0 } },
-  { label: '区间最大值', field: 'rangeMax', required: true, component: 'InputNumber', componentProps: { placeholder: '请输入区间最大值（不包含）', precision: 2, min: 0 } },
+  {
+    label: '最小值运算符',
+    field: 'rangeMinOp',
+    component: 'Select',
+    componentProps: { options: minOpOptions, placeholder: '请选择（无选则表示无下限）', allowClear: true },
+  },
+  {
+    label: '区间最小值',
+    field: 'rangeMin',
+    component: 'InputNumber',
+    componentProps: { placeholder: '无选则表示无下限', precision: 2, min: 0 },
+  },
+  {
+    label: '最大值运算符',
+    field: 'rangeMaxOp',
+    component: 'Select',
+    componentProps: { options: maxOpOptions, placeholder: '请选择（无选则表示无上限）', allowClear: true },
+  },
+  {
+    label: '区间最大值',
+    field: 'rangeMax',
+    component: 'InputNumber',
+    componentProps: { placeholder: '无选则表示无上限', precision: 2, min: 0 },
+  },
   { label: '单价', field: 'unitPrice', required: true, component: 'InputNumber', componentProps: { placeholder: '请输入单价', precision: 4, min: 0 } },
 ];
 

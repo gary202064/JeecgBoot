@@ -48,13 +48,21 @@ public class HnComplexPrice implements Serializable {
 	@Excel(name = "尺寸维度名称", width = 15)
     @Schema(description = "尺寸维度名称")
 	private java.lang.String dimensionName;
-	/**尺寸区间的最小值（包含）*/
+	/**最小值运算符*/
+	@Excel(name = "最小值运算符", width = 10)
+    @Schema(description = "最小值运算符 (>=, >)，NULL表示无下限")
+	private java.lang.String rangeMinOp;
+	/**尺寸区间最小值*/
 	@Excel(name = "区间最小值", width = 15)
-    @Schema(description = "尺寸区间的最小值（包含）")
+    @Schema(description = "尺寸区间最小值，NULL表示无下限")
 	private java.math.BigDecimal rangeMin;
-	/**尺寸区间的最大值（不包含）*/
+	/**最大值运算符*/
+	@Excel(name = "最大值运算符", width = 10)
+    @Schema(description = "最大值运算符 (<=, <)，NULL表示无上限")
+	private java.lang.String rangeMaxOp;
+	/**尺寸区间最大值*/
 	@Excel(name = "区间最大值", width = 15)
-    @Schema(description = "尺寸区间的最大值（不包含）")
+    @Schema(description = "尺寸区间最大值，NULL表示无上限")
 	private java.math.BigDecimal rangeMax;
 	/**在此组合下的加工单价*/
 	@Excel(name = "单价", width = 15)
