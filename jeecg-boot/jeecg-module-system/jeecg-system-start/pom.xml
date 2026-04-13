@@ -48,6 +48,21 @@
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.jeecgframework.boot3</groupId>
+            <artifactId>jeecg-boot-base-core</artifactId>
+        </dependency>
+        <!-- 添加此依赖来引入 system-biz 模块，解决 SysMessage 等类的缺失问题 -->
+        <dependency>
+            <groupId>org.jeecgframework.boot3</groupId>
+            <artifactId>jeecg-system-biz</artifactId>
+        </dependency>
+
+        <!-- 我在之前的回复中建议添加此依赖，请确保它也存在 -->
+        <dependency>
+            <groupId>org.jeecgframework.boot3</groupId>
+            <artifactId>jeecg-boot-base-core</artifactId>
+        </dependency>
         
         <!-- 分库分表示例 -->
      <!--  <dependency>
