@@ -1,6 +1,5 @@
 import { BasicColumn } from '/@/components/Table';
 import { FormSchema } from '/@/components/Table';
-import { getDimensionNames } from './HnComplexPrice.api';
 
 // 运算符选项
 const minOpOptions = [
@@ -50,22 +49,7 @@ export const formSchema: FormSchema[] = [
   { label: '工序', field: 'processId', required: true, component: 'JSearchSelect', componentProps: { dict: 'hn_process,name,id', placeholder: '请选择工序' } },
   { label: '产线', field: 'equipmentType', required: true, component: 'JDictSelectTag', componentProps: { dictCode: 'equipment_type', placeholder: '请选择产线' } },
   { label: '技能等级', field: 'skillLevel', required: true, component: 'JDictSelectTag', componentProps: { dictCode: 'skill_level', placeholder: '请选择技能等级' } },
-  {
-    label: '尺寸维度',
-    field: 'dimensionName',
-    required: true,
-    component: 'ApiSelect',
-    componentProps: {
-      api: getDimensionNames,
-      resultField: 'result',
-      labelField: 'label',
-      valueField: 'value',
-      immediate: true,
-      afterFetch: (data: string[]) => data.map((name) => ({ label: name, value: name })),
-      placeholder: '请选择尺寸维度名称',
-      showSearch: true,
-    },
-  },
+  { label: '尺寸维度', field: 'dimensionName', required: true, component: 'JDictSelectTag', componentProps: { dictCode: 'dimension_name', placeholder: '请选择尺寸维度' } },
   {
     label: '最小值运算符',
     field: 'rangeMinOp',
