@@ -55,12 +55,6 @@ public class HnBasePrice implements Serializable {
 	@Excel(name = "单价", width = 15)
     @Schema(description = "单价")
 	private java.math.BigDecimal unitPrice;
-	/**生效日期*/
-	@Excel(name = "生效日期", width = 15, format = "yyyy-MM-dd")
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
-    @Schema(description = "生效日期")
-	private java.util.Date effectiveDate;
 	/**状态*/
 	@Excel(name = "状态", width = 15, dicCode = "status")
     @Schema(description = "状态")

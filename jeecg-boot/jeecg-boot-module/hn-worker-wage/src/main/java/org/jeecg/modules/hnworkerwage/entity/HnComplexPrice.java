@@ -34,9 +34,14 @@ public class HnComplexPrice implements Serializable {
     @Schema(description = "关联的工序ID")
     @Dict(dictTable = "hn_process", dicCode = "id", dicText = "name")
 	private java.lang.Long processId;
-	/**设备类型*/
+	/**关联设备ID（与equipment_type二选一，有值时优先按设备匹配）*/
+	@Excel(name = "设备", width = 15, dictTable = "hn_equipment", dicCode = "id", dicText = "equipment_no")
+    @Schema(description = "关联设备ID (hn_equipment.id)，与equipment_type二选一，有值时优先匹配")
+    @Dict(dictTable = "hn_equipment", dicCode = "id", dicText = "equipment_no")
+	private java.lang.Long equipmentId;
+	/**设备类型（equipment_id为NULL时使用）*/
 	@Excel(name = "产线", width = 15, dicCode = "equipment_type")
-    @Schema(description = "产线 (数据字典)")
+    @Schema(description = "产线 (数据字典)，equipment_id为NULL时使用")
     @Dict(dicCode = "equipment_type")
 	private java.lang.String equipmentType;
 	/**技能等级*/

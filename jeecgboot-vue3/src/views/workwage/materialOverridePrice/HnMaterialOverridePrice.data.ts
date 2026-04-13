@@ -8,7 +8,6 @@ export const columns: BasicColumn[] = [
   { title: '熟练度', align: 'center', dataIndex: 'skillLevel_dictText' },
   { title: '物料编码', align: 'center', dataIndex: 'materialCodeId_dictText' },
   { title: '单价', align: 'center', dataIndex: 'unitPrice' },
-  { title: '生效日期', align: 'center', dataIndex: 'effectiveDate' },
   { title: '状态', align: 'center', dataIndex: 'status_dictText' },
 ];
 
@@ -27,7 +26,6 @@ export const formSchema: FormSchema[] = [
   { label: '熟练度', field: 'skillLevel', required: true, component: 'JDictSelectTag', componentProps: { dictCode: 'skill_level', placeholder: '请选择熟练度' } },
   { label: '物料编码', field: 'materialCodeId', required: true, component: 'JSearchSelect', componentProps: { dict: 'hn_material_code,code,id', placeholder: '请选择物料编码' } },
   { label: '单价', field: 'unitPrice', required: true, component: 'InputNumber', componentProps: { placeholder: '请输入单价', precision: 4, min: 0 } },
-  { label: '生效日期', field: 'effectiveDate', required: true, component: 'DatePicker', componentProps: { valueFormat: 'YYYY-MM-DD', placeholder: '请选择生效日期' } },
   { label: '状态', field: 'status', required: true, component: 'JDictSelectTag', componentProps: { dictCode: 'status', placeholder: '请选择状态' } },
 ];
 

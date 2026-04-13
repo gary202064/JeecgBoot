@@ -28,8 +28,6 @@ import java.util.stream.Collectors;
 public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMapper, HnMonthlyRecord> implements IHnMonthlyRecordService {
 
     @Autowired
-    private HnEquipmentMapper equipmentMapper;
-    @Autowired
     private HnWorkerProcessAbilityMapper workerProcessAbilityMapper;
     @Autowired
     private HnMaterialCodeMapper materialCodeMapper;
@@ -57,26 +55,12 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
             return;
         }
 
-        // 预加载所有相关设备（获取 equipment_type）
-        List<Long> equipmentIds = records.stream()
-                .filter(r -> r.getEquipmentId() != null)
-                .map(HnMonthlyRecord::getEquipmentId)
-                .distinct().collect(Collectors.toList());
-        Map<Long, HnEquipment> equipmentMap = equipmentIds.isEmpty() ? Map.of()
-                : equipmentMapper.selectList(new LambdaQueryWrapper<HnEquipment>().in(HnEquipment::getId, equipmentIds)).stream()
-                        .collect(Collectors.toMap(HnEquipment::getId, e -> e));
-
         int count = 0;
         for (HnMonthlyRecord record : records) {
             try {
-                // 获取设备类型
-                String equipmentType = null;
-                if (record.getEquipmentId() != null) {
-                    HnEquipment equipment = equipmentMap.get(record.getEquipmentId());
-                    if (equipment != null) {
-                        equipmentType = equipment.getEquipmentType();
-                    }
-                }
+                // 直接从月度记录获取产线和设备ID
+                String equipmentType = record.getEquipmentType();
+                Long equipmentId = record.getEquipmentId();
 
                 // 获取工人技能等级
                 String skillLevel = getWorkerSkillLevel(record.getWorkerId(), record.getProcessId());
@@ -97,8 +81,8 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
                 }
 
                 // 优先级2：复合定价
-                if (unitPrice == null && equipmentType != null && skillLevel != null) {
-                    unitPrice = findComplexPrice(record.getMaterialCodeId(), record.getProcessId(), equipmentType, skillLevel);
+                if (unitPrice == null && skillLevel != null) {
+                    unitPrice = findComplexPrice(record.getMaterialCodeId(), record.getProcessId(), equipmentId, equipmentType, skillLevel);
                     if (unitPrice != null) {
                         priceSource = "complex";
                     }
@@ -191,26 +175,47 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
     }
 
     /**
-     * 查找复合定价（优先级2）——需要根据物料尺寸匹配区间
+     * 查找复合定价（优先级2）——设备匹配优先，无命中则降级为产线匹配，再按尺寸区间命中
      */
-    private BigDecimal findComplexPrice(Long materialCodeId, Long processId, String equipmentType, String skillLevel) {
-        // 获取该工序+设备类型+技能等级的所有复合定价
-        LambdaQueryWrapper<HnComplexPrice> qw = new LambdaQueryWrapper<>();
-        qw.eq(HnComplexPrice::getProcessId, processId)
-          .eq(HnComplexPrice::getEquipmentType, equipmentType)
-          .eq(HnComplexPrice::getSkillLevel, skillLevel);
-        List<HnComplexPrice> candidates = complexPriceMapper.selectList(qw);
-        if (candidates.isEmpty()) return null;
-
-        // 获取物料的各尺寸维度对应尺寸値，构建 Map<dimensionName, dimensionValue>
+    private BigDecimal findComplexPrice(Long materialCodeId, Long processId, Long equipmentId, String equipmentType, String skillLevel) {
+        // 获取物料各尺寸维度对应尺寸値，构建 Map<dimensionName, dimensionValue>
         LambdaQueryWrapper<HnMaterialDimension> dqw = new LambdaQueryWrapper<>();
         dqw.eq(HnMaterialDimension::getMaterialCodeId, materialCodeId);
         List<HnMaterialDimension> dimensions = materialDimensionMapper.selectList(dqw);
         Map<String, BigDecimal> dimMap = dimensions.stream()
                 .collect(Collectors.toMap(HnMaterialDimension::getDimensionName, HnMaterialDimension::getDimensionValue,
                         (a, b) -> a));
+        if (dimMap.isEmpty()) return null;
 
-        // 匹配尺寸区间
+        // Step 3A：优先按设备匹配候选项
+        if (equipmentId != null) {
+            LambdaQueryWrapper<HnComplexPrice> qw = new LambdaQueryWrapper<>();
+            qw.eq(HnComplexPrice::getProcessId, processId)
+              .eq(HnComplexPrice::getEquipmentId, equipmentId)
+              .eq(HnComplexPrice::getSkillLevel, skillLevel);
+            List<HnComplexPrice> candidates = complexPriceMapper.selectList(qw);
+            if (!candidates.isEmpty()) {
+                // 设备匹配到候选项，在此基础上做尺寸区间匹配，不再退化到产线
+                for (HnComplexPrice cp : candidates) {
+                    BigDecimal dimValue = dimMap.get(cp.getDimensionName());
+                    if (dimValue == null) continue;
+                    if (matchesRange(dimValue, cp.getRangeMinOp(), cp.getRangeMin(), cp.getRangeMaxOp(), cp.getRangeMax())) {
+                        return cp.getUnitPrice();
+                    }
+                }
+                return null; // 设备匹配到但尺寸区间未命中，不再尝试产线
+            }
+            // 设备匹配候选集为空，降级到 Step 3B 产线匹配
+        }
+
+        // Step 3B：产线匹配（equipmentId 为 null 或设备匹配候选集为空）
+        if (equipmentType == null) return null;
+        LambdaQueryWrapper<HnComplexPrice> qw = new LambdaQueryWrapper<>();
+        qw.eq(HnComplexPrice::getProcessId, processId)
+          .eq(HnComplexPrice::getEquipmentType, equipmentType)
+          .eq(HnComplexPrice::getSkillLevel, skillLevel)
+          .isNull(HnComplexPrice::getEquipmentId); // 确保只匹配产线类型的定价行
+        List<HnComplexPrice> candidates = complexPriceMapper.selectList(qw);
         for (HnComplexPrice cp : candidates) {
             BigDecimal dimValue = dimMap.get(cp.getDimensionName());
             if (dimValue == null) continue;

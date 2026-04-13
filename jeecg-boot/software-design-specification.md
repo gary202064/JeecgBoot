@@ -314,7 +314,6 @@ CREATE TABLE `hn_base_price` (
   `process_id`     bigint        NOT NULL COMMENT '关联工序ID (hn_process.id)',
   `skill_level`    varchar(100)  DEFAULT NULL COMMENT '工人熟练度 (数据字典 skill_level)',
   `unit_price`     decimal(10,4) NOT NULL COMMENT '单价',
-  `effective_date` date          DEFAULT NULL COMMENT '生效日期',
   `status`         tinyint       DEFAULT '1' COMMENT '状态 (数据字典 status，1-正常/0-停用)',
   `create_by`      varchar(50)   DEFAULT NULL COMMENT '创建人',
   `create_time`    datetime      DEFAULT NULL COMMENT '创建日期',
@@ -339,7 +338,8 @@ CREATE TABLE `hn_base_price` (
 CREATE TABLE `hn_complex_price` (
   `id`             bigint        NOT NULL AUTO_INCREMENT COMMENT '主键',
   `process_id`     bigint        NOT NULL COMMENT '关联工序ID (hn_process.id)',
-  `equipment_type` varchar(100)  NOT NULL COMMENT '设备类型 (数据字典 equipment_type)',
+  `equipment_id`   bigint        DEFAULT NULL COMMENT '关联设备ID (hn_equipment.id)，与equipment_type二选一，有值时优先匹配',
+  `equipment_type` varchar(100)  DEFAULT NULL COMMENT '设备类型 (数据字典 equipment_type)，equipment_id为NULL时使用',
   `skill_level`    varchar(100)  DEFAULT NULL COMMENT '技能等级 (数据字典 skill_level)',
   `dimension_name` varchar(100)  NOT NULL COMMENT '参与定价的尺寸维度名称（如：长度）',
   `range_min_op`   varchar(2)    DEFAULT NULL COMMENT '最小值运算符 (>=, >)，NULL表示无下限',
@@ -353,12 +353,16 @@ CREATE TABLE `hn_complex_price` (
   `update_time`    datetime      DEFAULT NULL COMMENT '更新日期',
   `sys_org_code`   varchar(64)   DEFAULT NULL COMMENT '所属部门',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_complex_price` (`process_id`, `equipment_type`, `skill_level`, `dimension_name`, `range_min`)
+  UNIQUE KEY `uk_complex_price` (`process_id`, `equipment_id`, `equipment_type`, `skill_level`, `dimension_name`, `range_min`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='复合定价表';
 ```
 
 > **业务说明**：当某物料在某工序下的尺寸（由 `hn_material_dimension` 定义）满足区间条件时，使用该行定义的单价，优先级高于 `hn_base_price`。
-> 
+>
+> **设备/产线匹配优先级**：
+> - `equipment_id` 不为 NULL 时：优先按设备匹配候选项；设备匹配到候选项且尺寸区间匹配则取单价，如设备匹配候选集为空则降级到产线匹配。
+> - `equipment_id` 为 NULL 时：按 `equipment_type` 匹配（仅匹配 `equipment_id IS NULL` 的定价行）。
+>
 > 区间条件由 `range_min_op`、`range_min`、`range_max_op`、`range_max` 四个字段共同定义，支持以下灵活组合：
 > 
 > | 表达式示例 | range_min_op | range_min | range_max_op | range_max |
@@ -383,7 +387,6 @@ CREATE TABLE `hn_material_override_price` (
   `skill_level`    varchar(100)  DEFAULT NULL COMMENT '熟练度 (数据字典 skill_level)',
   `material_code_id` bigint      NOT NULL COMMENT '关联物料编码ID (hn_material_code.id)',
   `unit_price`     decimal(10,4) NOT NULL COMMENT '覆盖单价',
-  `effective_date` date          DEFAULT NULL COMMENT '生效日期',
   `status`         tinyint       DEFAULT '1' COMMENT '状态 (数据字典 status，1-正常/0-停用)',
   `create_by`      varchar(50)   DEFAULT NULL COMMENT '创建人',
   `create_time`    datetime      DEFAULT NULL COMMENT '创建日期',
@@ -513,7 +516,9 @@ CREATE TABLE `hn_monthly_summary` (
     匹配条件：material_code_id + product_id + equipment_type + process_id + skill_level
 
 优先级 2：复合定价 (hn_complex_price)
-    匹配条件：process_id + equipment_type + skill_level + dimension_name
+    匹配条件：process_id + skill_level + dimension_name
+    设备/产线优先级：equipment_id 不为 NULL 时优先按设备匹配候选项；
+                    设备候选集为空时降级按 equipment_type 匹配（仅 equipment_id IS NULL 的行）
     尺寸命中条件：由 range_min_op/range_min/range_max_op/range_max 共同定义区间
                   支持 >=、>、<=、< 四种运算符，运算符为 NULL 时表示该侧无界
 

@@ -166,7 +166,6 @@ CREATE TABLE IF NOT EXISTS `hn_base_price` (
   `process_id`     bigint        NOT NULL COMMENT '关联工序ID (hn_process.id)',
   `skill_level`    varchar(100)  DEFAULT NULL COMMENT '工人熟练度 (数据字典 skill_level)',
   `unit_price`     decimal(10,4) NOT NULL COMMENT '单价',
-  `effective_date` date          DEFAULT NULL COMMENT '生效日期',
   `status`         tinyint       DEFAULT '1' COMMENT '状态 (数据字典 status，1-正常/0-停用)',
   `create_by`      varchar(50)   DEFAULT NULL COMMENT '创建人',
   `create_time`    datetime      DEFAULT NULL COMMENT '创建日期',
@@ -183,7 +182,8 @@ CREATE TABLE IF NOT EXISTS `hn_base_price` (
 CREATE TABLE IF NOT EXISTS `hn_complex_price` (
   `id`             bigint        NOT NULL AUTO_INCREMENT COMMENT '主键',
   `process_id`     bigint        NOT NULL COMMENT '关联工序ID (hn_process.id)',
-  `equipment_type` varchar(100)  NOT NULL COMMENT '设备类型 (数据字典 equipment_type)',
+  `equipment_id`   bigint        DEFAULT NULL COMMENT '关联设备ID (hn_equipment.id)，与equipment_type二选一，有值时优先匹配',
+  `equipment_type` varchar(100)  DEFAULT NULL COMMENT '设备类型 (数据字典 equipment_type)，equipment_id为NULL时使用',
   `skill_level`    varchar(100)  DEFAULT NULL COMMENT '技能等级 (数据字典 skill_level)',
   `dimension_name` varchar(100)  NOT NULL COMMENT '参与定价的尺寸维度名称（如：长度）',
   `range_min_op`   varchar(2)    DEFAULT NULL COMMENT '最小值运算符 (>=, >)，NULL表示无下限',
@@ -197,7 +197,7 @@ CREATE TABLE IF NOT EXISTS `hn_complex_price` (
   `update_time`    datetime      DEFAULT NULL COMMENT '更新日期',
   `sys_org_code`   varchar(64)   DEFAULT NULL COMMENT '所属部门',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_complex_price` (`process_id`, `equipment_type`, `skill_level`, `dimension_name`, `range_min`)
+  UNIQUE KEY `uk_complex_price` (`process_id`, `equipment_id`, `equipment_type`, `skill_level`, `dimension_name`, `range_min`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='复合定价表';
 
 -- ---------------------------------------------------------------------------
@@ -211,7 +211,6 @@ CREATE TABLE IF NOT EXISTS `hn_material_override_price` (
   `skill_level`      varchar(100)  DEFAULT NULL COMMENT '熟练度 (数据字典 skill_level)',
   `material_code_id` bigint        NOT NULL COMMENT '关联物料编码ID (hn_material_code.id)',
   `unit_price`       decimal(10,4) NOT NULL COMMENT '覆盖单价',
-  `effective_date`   date          DEFAULT NULL COMMENT '生效日期',
   `status`           tinyint       DEFAULT '1' COMMENT '状态 (数据字典 status，1-正常/0-停用)',
   `create_by`        varchar(50)   DEFAULT NULL COMMENT '创建人',
   `create_time`      datetime      DEFAULT NULL COMMENT '创建日期',

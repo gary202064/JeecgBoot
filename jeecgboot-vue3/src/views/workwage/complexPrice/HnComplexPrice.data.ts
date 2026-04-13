@@ -13,6 +13,7 @@ const maxOpOptions = [
 
 export const columns: BasicColumn[] = [
   { title: '工序', align: 'center', dataIndex: 'processId_dictText' },
+  { title: '设备', align: 'center', dataIndex: 'equipmentId_dictText' },
   { title: '产线', align: 'center', dataIndex: 'equipmentType_dictText' },
   { title: '技能等级', align: 'center', dataIndex: 'skillLevel_dictText' },
   { title: '尺寸维度', align: 'center', dataIndex: 'dimensionName_dictText' },
@@ -39,6 +40,7 @@ export const columns: BasicColumn[] = [
 
 export const searchFormSchema: FormSchema[] = [
   { label: '工序', field: 'processId', component: 'JSearchSelect', componentProps: { dict: 'hn_process,name,id' }, colProps: { span: 6 } },
+  { label: '设备', field: 'equipmentId', component: 'JSearchSelect', componentProps: { dict: 'hn_equipment,equipment_no,id' }, colProps: { span: 6 } },
   { label: '产线', field: 'equipmentType', component: 'JDictSelectTag', componentProps: { dictCode: 'equipment_type' }, colProps: { span: 6 } },
   { label: '技能等级', field: 'skillLevel', component: 'JDictSelectTag', componentProps: { dictCode: 'skill_level' }, colProps: { span: 6 } },
   { label: '尺寸维度', field: 'dimensionName', component: 'JDictSelectTag', componentProps: { dictCode: 'dimension_name' }, colProps: { span: 6 } },
@@ -47,7 +49,8 @@ export const searchFormSchema: FormSchema[] = [
 export const formSchema: FormSchema[] = [
   { label: '', field: 'id', component: 'Input', show: false },
   { label: '工序', field: 'processId', required: true, component: 'JSearchSelect', componentProps: { dict: 'hn_process,name,id', placeholder: '请选择工序' } },
-  { label: '产线', field: 'equipmentType', required: true, component: 'JDictSelectTag', componentProps: { dictCode: 'equipment_type', placeholder: '请选择产线' } },
+  { label: '设备', field: 'equipmentId', component: 'JSearchSelect', componentProps: { dict: 'hn_equipment,equipment_no,id', placeholder: '请选择设备（与产线二选一，有则优先匹配）' } },
+  { label: '产线', field: 'equipmentType', component: 'JDictSelectTag', componentProps: { dictCode: 'equipment_type', placeholder: '请选择产线（设备为空时生效）' } },
   { label: '技能等级', field: 'skillLevel', required: true, component: 'JDictSelectTag', componentProps: { dictCode: 'skill_level', placeholder: '请选择技能等级' } },
   { label: '尺寸维度', field: 'dimensionName', required: true, component: 'JDictSelectTag', componentProps: { dictCode: 'dimension_name', placeholder: '请选择尺寸维度' } },
   {
@@ -79,7 +82,8 @@ export const formSchema: FormSchema[] = [
 
 export const superQuerySchema = {
   processId: { title: '工序', order: 0, view: 'sel_search', dictTable: 'hn_process', dictText: 'name', dictCode: 'id' },
-  equipmentType: { title: '产线', order: 1, view: 'list', dictCode: 'equipment_type' },
-  skillLevel: { title: '技能等级', order: 2, view: 'list', dictCode: 'skill_level' },
-  dimensionName: { title: '尺寸维度', order: 3, view: 'list', dictCode: 'dimension_name' },
+  equipmentId: { title: '设备', order: 1, view: 'sel_search', dictTable: 'hn_equipment', dictText: 'equipment_no', dictCode: 'id' },
+  equipmentType: { title: '产线', order: 2, view: 'list', dictCode: 'equipment_type' },
+  skillLevel: { title: '技能等级', order: 3, view: 'list', dictCode: 'skill_level' },
+  dimensionName: { title: '尺寸维度', order: 4, view: 'list', dictCode: 'dimension_name' },
 };
