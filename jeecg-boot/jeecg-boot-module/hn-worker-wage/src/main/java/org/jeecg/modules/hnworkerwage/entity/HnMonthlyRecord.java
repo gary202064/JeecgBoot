@@ -32,6 +32,7 @@ public class HnMonthlyRecord implements Serializable {
 	/**所属年月*/
 	@Excel(name = "所属年月", width = 15)
     @Schema(description = "所属年月")
+	@TableField("`year_month`")
 	private java.lang.String yearMonth;
 	/**导入批次ID*/
 	@Excel(name = "导入批次ID", width = 15, dictTable = "hn_import_batch", dicCode = "id", dicText = "file_name")
