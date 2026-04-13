@@ -53,11 +53,11 @@ public class HnMonthlyRecord implements Serializable {
     @Dict(dictTable = "hn_equipment", dicCode = "id", dicText = "equipment_no")
     private Long equipmentId;
 
-    /** 产线 */
-    @Excel(name = "产线", width = 15)
-    @Schema(description = "产线")
-    @Dict(dicCode = "production_line")
-    private String lineId;
+    /** 产线（数据字典 equipment_type）*/
+    @Excel(name = "产线", width = 15, dicCode = "equipment_type")
+    @Schema(description = "产线（数据字典 equipment_type）")
+    @Dict(dicCode = "equipment_type")
+    private String equipmentType;
 
     /** 物料编码ID */
     @Excel(name = "物料编码ID", width = 15, dictTable = "hn_material_code", dicCode = "id", dicText = "code")
