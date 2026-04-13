@@ -45,7 +45,7 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
     @Override
     @Async
     @Transactional(rollbackFor = Exception.class)
-    public int startCalculation(String yearMonth) {
+    public void startCalculation(String yearMonth) {
         // 查询待计算记录
         LambdaQueryWrapper<HnMonthlyRecord> qw = new LambdaQueryWrapper<>();
         qw.eq(HnMonthlyRecord::getCalcStatus, "pending");
@@ -54,7 +54,7 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
         }
         List<HnMonthlyRecord> records = this.list(qw);
         if (records.isEmpty()) {
-            return 0;
+            return;
         }
 
         // 预加载所有相关设备（获取 equipment_type）
@@ -131,7 +131,6 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
             }
         }
         log.info("单价计算完成， yearMonth={}, 处理记录数={}", yearMonth, count);
-        return count;
     }
 
     @Override
