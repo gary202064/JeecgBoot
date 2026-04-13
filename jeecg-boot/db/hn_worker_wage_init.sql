@@ -773,5 +773,13 @@ INSERT INTO sys_role_permission (id, role_id, permission_id, data_rule_ids, oper
 -- =============================================================================
 -- 收尾
 -- =============================================================================
+
+-- -------------------------
+-- 字典: dimension_name（尺寸维度）
+-- -------------------------
+INSERT IGNORE INTO sys_dict (id, dict_code, dict_name, description, del_flag, create_by, create_time, update_by, update_time, type)
+SELECT '20260413_dict_dimension_name', 'dimension_name', '尺寸维度', '物料尺寸维度名称，用于复合定价与物料尺寸定义', 0, 'admin', NOW(), NULL, NULL, 0
+WHERE NOT EXISTS (SELECT 1 FROM sys_dict WHERE dict_code = 'dimension_name');
+
 SET FOREIGN_KEY_CHECKS = 1;
 -- End of hn_worker_wage_init.sql

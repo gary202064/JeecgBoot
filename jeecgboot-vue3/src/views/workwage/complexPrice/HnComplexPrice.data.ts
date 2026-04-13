@@ -41,7 +41,7 @@ export const searchFormSchema: FormSchema[] = [
   { label: '工序', field: 'processId', component: 'JSearchSelect', componentProps: { dict: 'hn_process,name,id' }, colProps: { span: 6 } },
   { label: '设备类型', field: 'equipmentType', component: 'JDictSelectTag', componentProps: { dictCode: 'equipment_type' }, colProps: { span: 6 } },
   { label: '技能等级', field: 'skillLevel', component: 'JDictSelectTag', componentProps: { dictCode: 'skill_level' }, colProps: { span: 6 } },
-  { label: '尺寸维度', field: 'dimensionName', component: 'Input', colProps: { span: 6 } },
+  { label: '尺寸维度', field: 'dimensionName', component: 'JDictSelectTag', componentProps: { dictCode: 'dimension_name' }, colProps: { span: 6 } },
 ];
 
 export const formSchema: FormSchema[] = [
@@ -49,7 +49,7 @@ export const formSchema: FormSchema[] = [
   { label: '工序', field: 'processId', required: true, component: 'JSearchSelect', componentProps: { dict: 'hn_process,name,id', placeholder: '请选择工序' } },
   { label: '设备类型', field: 'equipmentType', required: true, component: 'JDictSelectTag', componentProps: { dictCode: 'equipment_type', placeholder: '请选择设备类型' } },
   { label: '技能等级', field: 'skillLevel', required: true, component: 'JDictSelectTag', componentProps: { dictCode: 'skill_level', placeholder: '请选择技能等级' } },
-  { label: '尺寸维度', field: 'dimensionName', required: true, component: 'Input', componentProps: { placeholder: '请输入尺寸维度名称' } },
+  { label: '尺寸维度', field: 'dimensionName', required: true, component: 'JDictSelectTag', componentProps: { dictCode: 'dimension_name', placeholder: '请选择尺寸维度' } },
   {
     label: '最小值运算符',
     field: 'rangeMinOp',
@@ -81,5 +81,5 @@ export const superQuerySchema = {
   processId: { title: '工序', order: 0, view: 'sel_search', dictTable: 'hn_process', dictText: 'name', dictCode: 'id' },
   equipmentType: { title: '设备类型', order: 1, view: 'list', dictCode: 'equipment_type' },
   skillLevel: { title: '技能等级', order: 2, view: 'list', dictCode: 'skill_level' },
-  dimensionName: { title: '尺寸维度', order: 3, view: 'text' },
+  dimensionName: { title: '尺寸维度', order: 3, view: 'list', dictCode: 'dimension_name' },
 };

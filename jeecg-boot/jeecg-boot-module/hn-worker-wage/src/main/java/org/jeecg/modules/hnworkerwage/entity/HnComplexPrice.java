@@ -44,10 +44,10 @@ public class HnComplexPrice implements Serializable {
     @Schema(description = "技能等级 (数据字典)")
     @Dict(dicCode = "skill_level")
 	private java.lang.String skillLevel;
-	/**尺寸维度名称（来源：hn_material_dimension.dimension_name）*/
-	@Excel(name = "尺寸维度", width = 15, dictTable = "hn_material_dimension", dicCode = "dimension_name", dicText = "dimension_name")
-    @Schema(description = "尺寸维度（来源：物料尺寸定义表）")
-    @Dict(dictTable = "hn_material_dimension", dicCode = "dimension_name", dicText = "dimension_name")
+	/**尺寸维度名称（数据字典：dimension_name）*/
+	@Excel(name = "尺寸维度", width = 15, dicCode = "dimension_name")
+    @Schema(description = "尺寸维度（数据字典 dimension_name）")
+    @Dict(dicCode = "dimension_name")
 	private java.lang.String dimensionName;
 	/**最小值运算符*/
 	@Excel(name = "最小值运算符", width = 10)

@@ -9,18 +9,18 @@ export const columns: BasicColumn[] = [
 
 export const searchFormSchema: FormSchema[] = [
   { label: '物料编码', field: 'materialCodeId', component: 'JSearchSelect', componentProps: { dict: 'hn_material_code,code,id' }, colProps: { span: 6 } },
-  { label: '尺寸维度名称', field: 'dimensionName', component: 'Input', colProps: { span: 6 } },
+  { label: '尺寸维度名称', field: 'dimensionName', component: 'JDictSelectTag', componentProps: { dictCode: 'dimension_name' }, colProps: { span: 6 } },
 ];
 
 export const formSchema: FormSchema[] = [
   { label: '', field: 'id', component: 'Input', show: false },
   { label: '物料编码', field: 'materialCodeId', required: true, component: 'JSearchSelect', componentProps: { dict: 'hn_material_code,code,id', placeholder: '请选择物料编码' } },
-  { label: '尺寸维度名称', field: 'dimensionName', required: true, component: 'Input', componentProps: { placeholder: '请输入尺寸维度名称' } },
+  { label: '尺寸维度名称', field: 'dimensionName', required: true, component: 'JDictSelectTag', componentProps: { dictCode: 'dimension_name', placeholder: '请选择尺寸维度' } },
   { label: '尺寸值', field: 'dimensionValue', required: true, component: 'InputNumber', componentProps: { placeholder: '请输入尺寸值', precision: 2, min: 0 } },
 ];
 
 export const superQuerySchema = {
   materialCodeId: { title: '物料编码', order: 0, view: 'sel_search', dictTable: 'hn_material_code', dictText: 'code', dictCode: 'id' },
-  dimensionName: { title: '尺寸维度名称', order: 1, view: 'text' },
+  dimensionName: { title: '尺寸维度名称', order: 1, view: 'list', dictCode: 'dimension_name' },
   dimensionValue: { title: '尺寸值', order: 2, view: 'number' },
 };

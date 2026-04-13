@@ -34,9 +34,10 @@ public class HnMaterialDimension implements Serializable {
     @Schema(description = "关联的物料编码ID")
     @Dict(dictTable = "hn_material_code", dicCode = "id", dicText = "code")
 	private java.lang.Long materialCodeId;
-	/**尺寸维度名称*/
-	@Excel(name = "尺寸维度名称", width = 15)
-    @Schema(description = "尺寸维度名称")
+	/**尺寸维度名称（数据字典：dimension_name）*/
+	@Excel(name = "尺寸维度", width = 15, dicCode = "dimension_name")
+    @Schema(description = "尺寸维度")
+    @Dict(dicCode = "dimension_name")
 	private java.lang.String dimensionName;
 	/**该物料的具体尺寸值*/
 	@Excel(name = "尺寸值", width = 15)
