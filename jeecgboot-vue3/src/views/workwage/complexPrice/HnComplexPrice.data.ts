@@ -15,7 +15,7 @@ export const columns: BasicColumn[] = [
   { title: '工序', align: 'center', dataIndex: 'processId_dictText' },
   { title: '产线', align: 'center', dataIndex: 'equipmentType_dictText' },
   { title: '技能等级', align: 'center', dataIndex: 'skillLevel_dictText' },
-  { title: '尺寸维度', align: 'center', dataIndex: 'dimensionName' },
+  { title: '尺寸维度', align: 'center', dataIndex: 'dimensionName_dictText' },
   {
     title: '区间下限',
     align: 'center',
