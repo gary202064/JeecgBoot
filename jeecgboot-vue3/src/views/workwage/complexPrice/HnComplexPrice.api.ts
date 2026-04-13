@@ -11,6 +11,7 @@ enum Api {
   deleteBatch = '/hnworkerwage/hnComplexPrice/deleteBatch',
   importExcel = '/hnworkerwage/hnComplexPrice/importExcel',
   exportXls = '/hnworkerwage/hnComplexPrice/exportXls',
+  dimensionNames = '/hnworkerwage/hnMaterialDimension/dimensionNames',
 }
 
 export const getExportUrl = Api.exportXls;
@@ -29,3 +30,8 @@ export const saveOrUpdate = (params, isUpdate) => {
   let url = isUpdate ? Api.edit : Api.save;
   return isUpdate ? defHttp.put({ url: url, params }) : defHttp.post({ url: url, params });
 };
+
+/**
+ * 获取所有不重复的尺寸维度名称列表
+ */
+export const getDimensionNames = () => defHttp.get<string[]>({ url: Api.dimensionNames });
