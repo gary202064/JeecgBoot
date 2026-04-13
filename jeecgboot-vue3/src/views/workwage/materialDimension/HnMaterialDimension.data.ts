@@ -3,7 +3,7 @@ import { FormSchema } from '/@/components/Table';
 
 export const columns: BasicColumn[] = [
   { title: '物料编码', align: 'center', dataIndex: 'materialCodeId_dictText' },
-  { title: '尺寸维度名称', align: 'center', dataIndex: 'dimensionName' },
+  { title: '尺寸维度名称', align: 'center', dataIndex: 'dimensionName_dictText' },
   { title: '尺寸值', align: 'center', dataIndex: 'dimensionValue' },
 ];
 
