@@ -1,6 +1,7 @@
 package org.jeecg.modules.hnworkerwage.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jeecg.common.api.vo.Result;
@@ -8,6 +9,7 @@ import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.hnworkerwage.entity.HnMaterialDimension;
 import org.jeecg.modules.hnworkerwage.service.IHnMaterialDimensionService;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -126,6 +128,23 @@ public class HnMaterialDimensionController extends JeecgController<HnMaterialDim
 		}
 		return Result.OK(hnMaterialDimension);
 	}
+
+    /**
+     * 获取所有不重复的尺寸维度名称列表（供复合定价下拉选择）
+     */
+    @Operation(summary = "物料尺寸定义表-获取维度名称列表")
+    @GetMapping(value = "/dimensionNames")
+    public Result<List<String>> dimensionNames() {
+        LambdaQueryWrapper<HnMaterialDimension> qw = new LambdaQueryWrapper<>();
+        qw.select(HnMaterialDimension::getDimensionName)
+          .groupBy(HnMaterialDimension::getDimensionName)
+          .orderByAsc(HnMaterialDimension::getDimensionName);
+        List<String> names = hnMaterialDimensionService.list(qw)
+                .stream()
+                .map(HnMaterialDimension::getDimensionName)
+                .collect(java.util.stream.Collectors.toList());
+        return Result.OK(names);
+    }
 
     /**
     * 导出excel
