@@ -64,7 +64,7 @@
       cancelText: '取消',
       onOk: async () => {
         try {
-          const res = await startCalculation({ yearMonth: queryParam.yearMonth });
+          const res = await startCalculation({ recordMonth: queryParam.recordMonth });
           if (res.success) {
             createMessage.success('计费任务已启动，请稍后查看结果。');
           }

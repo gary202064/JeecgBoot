@@ -246,7 +246,7 @@ CREATE TABLE IF NOT EXISTS `hn_price_change_log` (
 CREATE TABLE IF NOT EXISTS `hn_import_batch` (
   `id`            bigint       NOT NULL AUTO_INCREMENT COMMENT '主键',
   `file_name`     varchar(200) NOT NULL COMMENT '上传的原始文件名',
-  `year_month`    varchar(7)   NOT NULL COMMENT '所属年月（格式：YYYY-MM）',
+  `record_month`    varchar(7)   NOT NULL COMMENT '所属年月（格式：YYYY-MM）',
   `record_count`  int          DEFAULT '0' COMMENT '总记录数',
   `success_count` int          DEFAULT '0' COMMENT '成功导入数',
   `fail_count`    int          DEFAULT '0' COMMENT '失败记录数',
@@ -264,7 +264,7 @@ CREATE TABLE IF NOT EXISTS `hn_import_batch` (
 -- ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `hn_monthly_record` (
   `id`               bigint        NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `year_month`       varchar(7)    NOT NULL COMMENT '所属年月（格式：YYYY-MM）',
+  `record_month`       varchar(7)    NOT NULL COMMENT '所属年月（格式：YYYY-MM）',
   `import_batch_id`  bigint        DEFAULT NULL COMMENT '导入批次ID (hn_import_batch.id)',
   `worker_id`        bigint        NOT NULL COMMENT '工人ID (hn_worker.id)',
   `equipment_id`     bigint        NOT NULL COMMENT '设备ID (hn_equipment.id)',
@@ -290,7 +290,7 @@ CREATE TABLE IF NOT EXISTS `hn_monthly_record` (
 -- ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `hn_monthly_summary` (
   `id`               bigint        NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `year_month`       varchar(7)    NOT NULL COMMENT '所属年月（格式：YYYY-MM）',
+  `record_month`       varchar(7)    NOT NULL COMMENT '所属年月（格式：YYYY-MM）',
   `worker_id`        bigint        NOT NULL COMMENT '工人ID (hn_worker.id)',
   `equipment_id`     bigint        DEFAULT NULL COMMENT '设备ID (hn_equipment.id)',
   `material_code_id` bigint        NOT NULL COMMENT '物料编码ID (hn_material_code.id)',

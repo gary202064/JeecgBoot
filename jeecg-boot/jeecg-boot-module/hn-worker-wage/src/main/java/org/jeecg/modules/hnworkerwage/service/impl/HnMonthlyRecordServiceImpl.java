@@ -45,12 +45,12 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
     @Override
     @Async
     @Transactional(rollbackFor = Exception.class)
-    public void startCalculation(String yearMonth) {
+    public void startCalculation(String recordMonth) {
         // 查询待计算记录
         LambdaQueryWrapper<HnMonthlyRecord> qw = new LambdaQueryWrapper<>();
         qw.eq(HnMonthlyRecord::getCalcStatus, "pending");
-        if (StringUtils.hasText(yearMonth)) {
-            qw.eq(HnMonthlyRecord::getYearMonth, yearMonth);
+        if (StringUtils.hasText(recordMonth)) {
+            qw.eq(HnMonthlyRecord::getRecordMonth, recordMonth);
         }
         List<HnMonthlyRecord> records = this.list(qw);
         if (records.isEmpty()) {
@@ -130,7 +130,7 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
                 log.error("月度记录单价计算失败, recordId={}", record.getId(), e);
             }
         }
-        log.info("单价计算完成， yearMonth={}, 处理记录数={}", yearMonth, count);
+        log.info("单价计算完成， recordMonth={}, 处理记录数={}", recordMonth, count);
     }
 
     @Override

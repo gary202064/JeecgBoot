@@ -2,7 +2,7 @@ import { BasicColumn } from '/@/components/Table';
 import { FormSchema } from '/@/components/Table';
 
 export const columns: BasicColumn[] = [
-  { title: '所属年月', align: 'center', dataIndex: 'yearMonth' },
+  { title: '所属年月', align: 'center', dataIndex: 'recordMonth' },
   { title: '工人', align: 'center', dataIndex: 'workerId_dictText' },
   { title: '设备', align: 'center', dataIndex: 'equipmentId_dictText' },
   { title: '物料编码', align: 'center', dataIndex: 'materialCodeId_dictText' },
@@ -15,7 +15,7 @@ export const columns: BasicColumn[] = [
 ];
 
 export const searchFormSchema: FormSchema[] = [
-  { label: '所属年月', field: 'yearMonth', component: 'JInput', colProps: { span: 6 } },
+  { label: '所属年月', field: 'recordMonth', component: 'JInput', colProps: { span: 6 } },
   { label: '工人', field: 'workerId', component: 'JSearchSelect', componentProps: { dict: 'hn_worker,name,id' }, colProps: { span: 6 } },
   { label: '设备', field: 'equipmentId', component: 'JSearchSelect', componentProps: { dict: 'hn_equipment,equipment_no,id' }, colProps: { span: 6 } },
   { label: '工序', field: 'processId', component: 'JSearchSelect', componentProps: { dict: 'hn_process,name,id' }, colProps: { span: 6 } },
@@ -23,7 +23,7 @@ export const searchFormSchema: FormSchema[] = [
 
 export const formSchema: FormSchema[] = [
   { label: '', field: 'id', component: 'Input', show: false },
-  { label: '所属年月', field: 'yearMonth', required: true, component: 'Input', componentProps: { placeholder: '请输入所属年月' } },
+  { label: '所属年月', field: 'recordMonth', required: true, component: 'Input', componentProps: { placeholder: '请输入所属年月' } },
   { label: '工人', field: 'workerId', required: true, component: 'JSearchSelect', componentProps: { dict: 'hn_worker,name,id', placeholder: '请选择工人' } },
   { label: '设备', field: 'equipmentId', required: true, component: 'JSearchSelect', componentProps: { dict: 'hn_equipment,equipment_no,id', placeholder: '请选择设备' } },
   { label: '物料编码', field: 'materialCodeId', required: true, component: 'JSearchSelect', componentProps: { dict: 'hn_material_code,code,id', placeholder: '请选择物料编码' } },

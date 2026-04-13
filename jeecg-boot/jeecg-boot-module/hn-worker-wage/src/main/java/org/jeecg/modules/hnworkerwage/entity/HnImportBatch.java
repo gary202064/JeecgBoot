@@ -3,6 +3,7 @@ package org.jeecg.modules.hnworkerwage.entity;
 import java.io.Serializable;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -34,7 +35,8 @@ public class HnImportBatch implements Serializable {
 	/**所属年月*/
 	@Excel(name = "所属年月", width = 15)
     @Schema(description = "所属年月")
-	private java.lang.String yearMonth;
+	@TableField("record_month")
+	private java.lang.String recordMonth;
 	/**总记录数*/
 	@Excel(name = "总记录数", width = 15)
     @Schema(description = "总记录数")

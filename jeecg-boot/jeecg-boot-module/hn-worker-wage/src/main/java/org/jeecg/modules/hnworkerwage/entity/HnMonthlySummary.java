@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -32,7 +33,8 @@ public class HnMonthlySummary implements Serializable {
 	/**所属年月*/
 	@Excel(name = "所属年月", width = 15)
     @Schema(description = "所属年月")
-	private java.lang.String yearMonth;
+	@TableField("record_month")
+	private java.lang.String recordMonth;
 	/**工人ID*/
 	@Excel(name = "工人ID", width = 15, dictTable = "hn_worker", dicCode = "id", dicText = "name")
     @Schema(description = "工人ID")
