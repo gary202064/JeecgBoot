@@ -1,6 +1,7 @@
 package org.jeecg.modules.hnworkerwage.controller;
 
 import java.util.Arrays;
+import java.math.BigDecimal;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jeecg.common.api.vo.Result;
@@ -124,11 +125,33 @@ public class HnMonthlyRecordController extends JeecgController<HnMonthlyRecord, 
 	}
 
     /**
-    * 导出excel
-    *
-    * @param request
-    * @param hnMonthlyRecord
-    */
+     * 触发单价计算（异步）
+     */
+    @Operation(summary = "月度加工记录表-触发单价计算")
+    @PostMapping(value = "/startCalculation")
+    public Result<String> startCalculation(@RequestParam(name = "yearMonth", required = false) String yearMonth) {
+        int count = hnMonthlyRecordService.startCalculation(yearMonth);
+        return Result.OK("已触发计算，本次处理记录数：" + count);
+    }
+
+    /**
+     * 手工补录单价
+     */
+    @Operation(summary = "月度加工记录表-手工补录单价")
+    @PutMapping(value = "/manualSetPrice")
+    public Result<String> manualSetPrice(
+            @RequestParam(name = "id", required = true) Long id,
+            @RequestParam(name = "manualPrice", required = true) BigDecimal manualPrice) {
+        hnMonthlyRecordService.manualSetPrice(id, manualPrice);
+        return Result.OK("手工单价补录成功！");
+    }
+
+    /**
+     * 导出excel
+     *
+     * @param request
+     * @param hnMonthlyRecord
+     */
     @RequestMapping(value = "/exportXls")
     public ModelAndView exportXls(HttpServletRequest request, HnMonthlyRecord hnMonthlyRecord) {
         return super.exportXls(request, hnMonthlyRecord, HnMonthlyRecord.class, "月度加工记录表");
