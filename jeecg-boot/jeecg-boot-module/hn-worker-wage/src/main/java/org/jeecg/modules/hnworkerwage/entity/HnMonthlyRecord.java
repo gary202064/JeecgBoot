@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -36,31 +35,31 @@ public class HnMonthlyRecord implements Serializable {
     private Long importBatchId;
 
     /** 工人ID */
-    @Excel(name = "工人ID", width = 15, dictTable = "hn_worker", dicCode = "id", dicText = "name")
+    @Excel(name = "操作工姓名", width = 15, dictTable = "hn_worker", dicCode = "id", dicText = "name")
     @Schema(description = "工人ID")
     @Dict(dictTable = "hn_worker", dicCode = "id", dicText = "name")
     private Long workerId;
 
     /** 设备ID */
-    @Excel(name = "设备ID", width = 15, dictTable = "hn_equipment", dicCode = "id", dicText = "equipment_no")
+    @Excel(name = "设备", width = 15, dictTable = "hn_equipment", dicCode = "id", dicText = "equipment_no")
     @Schema(description = "设备ID")
     @Dict(dictTable = "hn_equipment", dicCode = "id", dicText = "equipment_no")
     private Long equipmentId;
 
     /** 产线（数据字典 equipment_type）*/
-    @Excel(name = "产线", width = 15, dicCode = "equipment_type")
+    @Excel(name = "订单生产车间", width = 15, dicCode = "equipment_type")
     @Schema(description = "产线（数据字典 equipment_type）")
     @Dict(dicCode = "equipment_type")
     private String equipmentType;
 
     /** 物料编码ID */
-    @Excel(name = "物料编码ID", width = 15, dictTable = "hn_material_code", dicCode = "id", dicText = "code")
+    @Excel(name = "旧物料编码", width = 15, dictTable = "hn_material_code", dicCode = "id", dicText = "code")
     @Schema(description = "物料编码ID")
     @Dict(dictTable = "hn_material_code", dicCode = "id", dicText = "code")
     private Long materialCodeId;
 
     /** 工序ID */
-    @Excel(name = "工序ID", width = 15, dictTable = "hn_process", dicCode = "id", dicText = "name")
+    @Excel(name = "作业", width = 15, dictTable = "hn_process", dicCode = "id", dicText = "name")
     @Schema(description = "工序ID")
     @Dict(dictTable = "hn_process", dicCode = "id", dicText = "name")
     private Long processId;
@@ -93,7 +92,7 @@ public class HnMonthlyRecord implements Serializable {
     private Integer scrapQty;
 
     /** 料费数量 */
-    @Excel(name = "料费数量", width = 12)
+    @Excel(name = "料废数量", width = 12)
     @Schema(description = "料费数量")
     private Integer materialWasteQty;
 
@@ -113,7 +112,7 @@ public class HnMonthlyRecord implements Serializable {
     private Integer wheelWasteQty;
 
     /** 杆废 */
-    @Excel(name = "杆废", width = 12)
+    @Excel(name = "杆废数量", width = 12)
     @Schema(description = "杆废")
     private Integer rodWasteQty;
 
