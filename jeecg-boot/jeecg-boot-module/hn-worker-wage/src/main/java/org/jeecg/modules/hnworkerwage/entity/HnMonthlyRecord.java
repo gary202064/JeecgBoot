@@ -76,6 +76,53 @@ public class HnMonthlyRecord implements Serializable {
     @Schema(description = "合格数量")
     private Integer quantity;
 
+    /** 生产订单编号 */
+    @Excel(name = "生产订单编号", width = 20)
+    @Schema(description = "生产订单编号")
+    private String productionOrderNo;
+
+    /** 单据日期 */
+    @Excel(name = "单据日期", width = 15, format = "yyyy-MM-dd")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Schema(description = "单据日期")
+    private java.util.Date documentDate;
+
+    /** 批号 */
+    @Excel(name = "批号", width = 15)
+    @Schema(description = "批号")
+    private String batchNo;
+
+    /** 工废数量 */
+    @Excel(name = "工废数量", width = 12)
+    @Schema(description = "工废数量")
+    private Integer scrapQty;
+
+    /** 料费数量 */
+    @Excel(name = "料费数量", width = 12)
+    @Schema(description = "料费数量")
+    private Integer materialWasteQty;
+
+    /** 次品数量 */
+    @Excel(name = "次品数量", width = 12)
+    @Schema(description = "次品数量")
+    private Integer defectQty;
+
+    /** 轮废数量 */
+    @Excel(name = "轮废数量", width = 12)
+    @Schema(description = "轮废数量")
+    private Integer wheelWasteQty;
+
+    /** 杆废 */
+    @Excel(name = "杆废", width = 12)
+    @Schema(description = "杆废")
+    private Integer rodWasteQty;
+
+    /** 产品编码 */
+    @Excel(name = "产品编码", width = 20)
+    @Schema(description = "产品编码")
+    private String productCode;
+
     /** 计算使用的单价 */
     @Excel(name = "单价", width = 15)
     @Schema(description = "计算使用的单价")
