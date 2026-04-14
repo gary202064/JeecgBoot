@@ -4,6 +4,7 @@ import org.jeecg.modules.hnworkerwage.entity.HnMonthlyRecord;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.jeecg.common.api.vo.Result;
 import org.springframework.web.multipart.MultipartFile;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.math.BigDecimal;
 
@@ -37,10 +38,13 @@ public interface IHnMonthlyRecordService extends IService<HnMonthlyRecord> {
 
     /**
      * 自定义导入月度加工记录：按列标题解析Excel，逐行进行字典反查转换。
-     * 对无法转换的行收集错误信息（行号+关键字段值），导入结束后统一返回。
-     * 若存在无法转换的行，本次导入整体失败，不写入任何数据。
-     * @param file 上传的Excel文件
-     * @return 操作结果（成功数量或详细错误信息）
+     * - 若全部行转换成功，写入数据库，返回成功结果。
+     * - 若存在无法转换的行，在原始Excel末尾追加「错误原因」列，将错误报告Excel
+     *   写入 HttpServletResponse（Content-Disposition: attachment），
+     *   同时返回 Result.error 告知前端有错误（前端收到非200或特定标志后触发下载）。
+     * @param file     上传的Excel文件
+     * @param response HttpServletResponse，用于输出错误报告Excel
+     * @return 操作结果
      */
-    Result<?> importMonthlyRecords(MultipartFile file);
+    Result<?> importMonthlyRecords(MultipartFile file, HttpServletResponse response);
 }

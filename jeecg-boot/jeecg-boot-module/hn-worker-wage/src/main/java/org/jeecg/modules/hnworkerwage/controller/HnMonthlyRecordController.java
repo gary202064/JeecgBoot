@@ -162,11 +162,12 @@ public class HnMonthlyRecordController extends JeecgController<HnMonthlyRecord, 
       * 通过excel导入数据
     *
       * @param file
+      * @param response
       * @return
       */
     @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
-    public Result<?> importExcel(@RequestParam("file") MultipartFile file) {
-        return hnMonthlyRecordService.importMonthlyRecords(file);
+    public Result<?> importExcel(@RequestParam("file") MultipartFile file, HttpServletResponse response) {
+        return hnMonthlyRecordService.importMonthlyRecords(file, response);
     }
 
 }

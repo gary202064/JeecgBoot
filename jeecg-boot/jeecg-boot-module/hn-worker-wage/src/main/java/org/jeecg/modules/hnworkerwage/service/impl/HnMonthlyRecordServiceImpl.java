@@ -3,8 +3,12 @@ package org.jeecg.modules.hnworkerwage.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.jeecg.common.api.vo.Result;
@@ -18,7 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -195,26 +202,40 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Result<?> importMonthlyRecords(MultipartFile file) {
+    public Result<?> importMonthlyRecords(MultipartFile file, HttpServletResponse response) {
         if (file == null || file.isEmpty()) {
             return Result.error("上传文件为空");
         }
         String filename = file.getOriginalFilename();
-        try (Workbook workbook = openWorkbook(file, filename)) {
+        // 将文件内容读入内存 Workbook（需要在出错时重新使用）
+        Workbook workbook;
+        try {
+            workbook = openWorkbook(file, filename);
+        } catch (Exception e) {
+            log.error("Excel文件解析失败", e);
+            return Result.error("Excel文件解析失败: " + e.getMessage());
+        }
+
+        try {
             Sheet sheet = workbook.getSheetAt(0);
             // 解析标题行，建立 列标题 -> 列索引 映射
             Row headerRow = sheet.getRow(0);
             if (headerRow == null) {
+                workbook.close();
                 return Result.error("Excel文件无标题行");
             }
             Map<String, Integer> colIndex = new HashMap<>();
+            int maxOriginalColIdx = 0;
             for (int c = 0; c < headerRow.getLastCellNum(); c++) {
                 Cell cell = headerRow.getCell(c);
                 if (cell != null) {
                     String title = cell.getStringCellValue().trim();
                     colIndex.put(title, c);
+                    maxOriginalColIdx = c;
                 }
             }
+            // 错误列将追加在所有原始列之后
+            int errorColIdx = maxOriginalColIdx + 1;
 
             // 预加载字典（name->id）以减少数据库查询次数
             Map<String, Long> workerNameToId   = loadWorkerMap();
@@ -222,7 +243,8 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
             Map<String, Long> materialCodeToId = loadMaterialCodeMap();
             Map<String, Long> processNameToId  = loadProcessMap();
 
-            List<String> errors = new ArrayList<>();
+            // 记录每行的错误（key=行号0-based，value=错误描述）
+            Map<Integer, String> rowErrorMap = new LinkedHashMap<>();
             List<HnMonthlyRecord> records = new ArrayList<>();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -261,10 +283,7 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
                 }
 
                 if (!rowErrors.isEmpty()) {
-                    String productionOrderNo = getStrCell(row, colIndex, COL_PRODUCTION_ORDER_NO);
-                    errors.add(String.format("第%d行 [生产订单:%s, 操作工:%s, 设备:%s, 物料:%s, 作业:%s]: %s",
-                            excelRowNo, productionOrderNo, workerName, equipmentNo, materialCode, processName,
-                            String.join("; ", rowErrors)));
+                    rowErrorMap.put(r, String.join("; ", rowErrors));
                     continue;
                 }
 
@@ -276,8 +295,6 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
                 record.setProcessId(processId);
 
                 // 从设备表获取产线类型（equipmentType）
-                String equipmentTypeName = getStrCell(row, colIndex, COL_EQUIPMENT_TYPE);
-                // 先尝试直接使用原始值（equipment_type 字典 code），否则通过设备ID反查
                 HnEquipment eq = equipmentMapper.selectById(equipmentId);
                 record.setEquipmentType(eq != null ? eq.getEquipmentType() : null);
 
@@ -298,10 +315,8 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
                 String docDateStr = getStrCell(row, colIndex, COL_DOCUMENT_DATE);
                 if (StringUtils.hasText(docDateStr)) {
                     try {
-                        // Excel 日期可能已转为字符串
                         record.setDocumentDate(sdf.parse(docDateStr));
                     } catch (Exception e) {
-                        // 尝试 yyyy/M/d 格式
                         try {
                             record.setDocumentDate(new SimpleDateFormat("yyyy/M/d").parse(docDateStr));
                         } catch (Exception ex) {
@@ -313,11 +328,14 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
                 records.add(record);
             }
 
-            if (!errors.isEmpty()) {
-                String msg = "导入失败，以下" + errors.size() + "行数据无法识别，请完善基础数据后重新导入：\n"
-                        + String.join("\n", errors);
-                return Result.error(msg);
+            // -------- 有错误行：生成带错误列的Excel输出到response --------
+            if (!rowErrorMap.isEmpty()) {
+                writeErrorReportToResponse(workbook, sheet, headerRow, errorColIdx, rowErrorMap, filename, response);
+                workbook.close();
+                return Result.error("导入失败，共" + rowErrorMap.size() + "行数据无法识别，请下载错误报告并完善基础数据后重新导入");
             }
+
+            workbook.close();
 
             if (records.isEmpty()) {
                 return Result.error("Excel中无有效数据行");
@@ -328,8 +346,106 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
 
         } catch (Exception e) {
             log.error("月度加工记录导入异常", e);
+            try { workbook.close(); } catch (Exception ignored) {}
             return Result.error("导入失败: " + e.getMessage());
         }
+    }
+
+    /**
+     * 在原始 Sheet 末尾添加「导入错误原因」列，将有问题的行标红并写入错误信息，
+     * 然后将整个 Workbook 写入 response 供用户下载。
+     */
+    private void writeErrorReportToResponse(Workbook workbook, Sheet sheet, Row headerRow,
+                                             int errorColIdx, Map<Integer, String> rowErrorMap,
+                                             String originalFilename, HttpServletResponse response) throws Exception {
+        // 写标题行的错误列标题
+        Cell headerErrorCell = headerRow.createCell(errorColIdx);
+        headerErrorCell.setCellValue("导入错误原因");
+        CellStyle headerStyle = createHeaderErrorStyle(workbook);
+        headerErrorCell.setCellStyle(headerStyle);
+
+        // 为错误行写入错误信息并设置背景色
+        CellStyle errorStyle = createRowErrorStyle(workbook);
+        for (Map.Entry<Integer, String> entry : rowErrorMap.entrySet()) {
+            int rowIdx = entry.getKey();
+            String errorMsg = entry.getValue();
+            Row row = sheet.getRow(rowIdx);
+            if (row == null) row = sheet.createRow(rowIdx);
+            Cell errorCell = row.createCell(errorColIdx);
+            errorCell.setCellValue(errorMsg);
+            errorCell.setCellStyle(errorStyle);
+        }
+
+        // 自动调整错误列宽度（近似值，POI单位为1/256字符宽）
+        sheet.setColumnWidth(errorColIdx, 15000);
+
+        // 设置response头，触发浏览器下载
+        String reportFilename = "导入错误报告_" +
+                new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".xlsx";
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition",
+                "attachment; filename*=UTF-8''" + URLEncoder.encode(reportFilename, StandardCharsets.UTF_8));
+        response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
+
+        try (OutputStream out = response.getOutputStream()) {
+            // 统一以 xlsx 格式输出（确保兼容性）
+            if (workbook instanceof HSSFWorkbook) {
+                // xls 转 xlsx：重新创建 XSSFWorkbook 输出
+                XSSFWorkbook xssfWb = convertToXssf((HSSFWorkbook) workbook);
+                xssfWb.write(out);
+                xssfWb.close();
+            } else {
+                workbook.write(out);
+            }
+            out.flush();
+        }
+    }
+
+    /** 创建错误列标题样式（橙色背景加粗） */
+    private CellStyle createHeaderErrorStyle(Workbook workbook) {
+        CellStyle style = workbook.createCellStyle();
+        Font font = workbook.createFont();
+        font.setBold(true);
+        style.setFont(font);
+        style.setFillForegroundColor(IndexedColors.ORANGE.getIndex());
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        style.setAlignment(HorizontalAlignment.CENTER);
+        style.setWrapText(true);
+        return style;
+    }
+
+    /** 创建错误行单元格样式（浅红色背景） */
+    private CellStyle createRowErrorStyle(Workbook workbook) {
+        CellStyle style = workbook.createCellStyle();
+        style.setFillForegroundColor(IndexedColors.ROSE.getIndex());
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        style.setWrapText(true);
+        style.setVerticalAlignment(VerticalAlignment.TOP);
+        return style;
+    }
+
+    /**
+     * 将 HSSFWorkbook (xls) 转换为 XSSFWorkbook (xlsx) 的简单实现：
+     * 直接复制所有单元格文本值（不保留原格式）。
+     */
+    private XSSFWorkbook convertToXssf(HSSFWorkbook hssfWb) {
+        XSSFWorkbook xssfWb = new XSSFWorkbook();
+        for (int si = 0; si < hssfWb.getNumberOfSheets(); si++) {
+            org.apache.poi.ss.usermodel.Sheet srcSheet = hssfWb.getSheetAt(si);
+            org.apache.poi.ss.usermodel.Sheet dstSheet = xssfWb.createSheet(srcSheet.getSheetName());
+            for (int r = 0; r <= srcSheet.getLastRowNum(); r++) {
+                Row srcRow = srcSheet.getRow(r);
+                if (srcRow == null) continue;
+                Row dstRow = dstSheet.createRow(r);
+                for (int c = srcRow.getFirstCellNum(); c < srcRow.getLastCellNum(); c++) {
+                    Cell srcCell = srcRow.getCell(c);
+                    if (srcCell == null) continue;
+                    Cell dstCell = dstRow.createCell(c);
+                    dstCell.setCellValue(getCellStringValue(srcCell));
+                }
+            }
+        }
+        return xssfWb;
     }
 
     /** 根据文件名判断 xlsx/xls 并返回对应 Workbook */
