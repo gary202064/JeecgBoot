@@ -31,7 +31,8 @@ public interface IHnMonthlyRecordService extends IService<HnMonthlyRecord> {
 
     /**
      * 编辑月度加工记录：
-     * 若 calcStatus 为 'pending'，则同时清空 unitPrice、totalAmount、priceSource
+     * 若 calcStatus 为 'pending'，则同时清空 unitPrice、totalAmount、priceSource；
+     * 若 calcStatus 为 'manual'，则将 manualPrice 同步到 unitPrice，按数量计算 totalAmount，并将 priceSource 置为 'manua'
      * @param record 待更新的记录对象
      */
     void editRecord(HnMonthlyRecord record);

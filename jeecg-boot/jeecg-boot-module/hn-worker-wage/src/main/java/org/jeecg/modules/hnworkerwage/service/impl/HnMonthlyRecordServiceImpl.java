@@ -12,6 +12,8 @@ import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.jeecg.common.api.vo.Result;
+import org.jeecg.common.system.api.ISysBaseAPI;
+import org.jeecg.common.system.vo.DictModel;
 import org.jeecg.modules.hnworkerwage.entity.*;
 import org.jeecg.modules.hnworkerwage.mapper.*;
 import org.jeecg.modules.hnworkerwage.service.IHnMonthlyRecordService;
@@ -58,6 +60,8 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
     private HnEquipmentMapper equipmentMapper;
     @Autowired
     private HnProcessMapper processMapper;
+    @Autowired
+    private ISysBaseAPI sysBaseAPI;
 
     // ---- Excel 列标题常量 ----
     private static final String COL_PRODUCTION_ORDER_NO = "生产订单编号";
@@ -162,12 +166,15 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
         if (record == null) {
             throw new RuntimeException("记录不存在, id=" + id);
         }
+        BigDecimal totalAmount = manualPrice == null
+            ? null
+            : manualPrice.multiply(new BigDecimal(record.getQuantity() == null ? 0 : record.getQuantity()));
         HnMonthlyRecord update = new HnMonthlyRecord();
         update.setId(id);
         update.setManualPrice(manualPrice);
         update.setUnitPrice(manualPrice);
-        update.setTotalAmount(manualPrice.multiply(new BigDecimal(record.getQuantity() == null ? 0 : record.getQuantity())));
-        update.setPriceSource("manual");
+        update.setTotalAmount(totalAmount);
+        update.setPriceSource("manua");
         update.setCalcStatus("manual");
         this.updateById(update);
     }
@@ -176,7 +183,7 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
     @Transactional(rollbackFor = Exception.class)
     public void editRecord(HnMonthlyRecord record) {
         if ("pending".equals(record.getCalcStatus())) {
-            // 状态改回待计算，用 UpdateWrapper 显式将三个字段置为 NULL
+            // 状态改回待计算，用 UpdateWrapper 显式将相关字段置为 NULL
             LambdaUpdateWrapper<HnMonthlyRecord> uw = new LambdaUpdateWrapper<>();
             uw.eq(HnMonthlyRecord::getId, record.getId())
               .set(HnMonthlyRecord::getCalcStatus, record.getCalcStatus())
@@ -191,9 +198,30 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
               .set(HnMonthlyRecord::getTotalAmount, null)
               .set(HnMonthlyRecord::getPriceSource, null);
             this.update(uw);
-        } else {
-            this.updateById(record);
+            return;
         }
+        if ("manual".equals(record.getCalcStatus())) {
+            // 状态改为手工补录时，按合格数量与手工补录单价计算金额，并同步价格来源
+            BigDecimal totalAmount = record.getManualPrice() == null
+                ? null
+                : record.getManualPrice().multiply(new BigDecimal(record.getQuantity() == null ? 0 : record.getQuantity()));
+            LambdaUpdateWrapper<HnMonthlyRecord> uw = new LambdaUpdateWrapper<>();
+            uw.eq(HnMonthlyRecord::getId, record.getId())
+              .set(HnMonthlyRecord::getCalcStatus, record.getCalcStatus())
+              .set(HnMonthlyRecord::getWorkerId, record.getWorkerId())
+              .set(HnMonthlyRecord::getEquipmentId, record.getEquipmentId())
+              .set(HnMonthlyRecord::getEquipmentType, record.getEquipmentType())
+              .set(HnMonthlyRecord::getMaterialCodeId, record.getMaterialCodeId())
+              .set(HnMonthlyRecord::getProcessId, record.getProcessId())
+              .set(HnMonthlyRecord::getQuantity, record.getQuantity())
+              .set(HnMonthlyRecord::getManualPrice, record.getManualPrice())
+              .set(HnMonthlyRecord::getUnitPrice, record.getManualPrice())
+              .set(HnMonthlyRecord::getTotalAmount, totalAmount)
+              .set(HnMonthlyRecord::getPriceSource, "manua");
+            this.update(uw);
+            return;
+        }
+        this.updateById(record);
     }
 
     // ============ 私有辅助方法 ============
@@ -242,6 +270,7 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
             Map<String, Long> equipmentNoToId  = loadEquipmentMap();
             Map<String, Long> materialCodeToId = loadMaterialCodeMap();
             Map<String, Long> processNameToId  = loadProcessMap();
+            Map<String, String> equipmentTypeTextToValue = loadEquipmentTypeDictMap();
 
             // 记录每行的错误（key=行号0-based，value=错误描述）
             Map<Integer, String> rowErrorMap = new LinkedHashMap<>();
@@ -261,6 +290,7 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
                 String equipmentNo   = getStrCell(row, colIndex, COL_EQUIPMENT);
                 String materialCode  = getStrCell(row, colIndex, COL_MATERIAL_CODE);
                 String processName   = getStrCell(row, colIndex, COL_PROCESS);
+                String equipmentTypeText = getStrCell(row, colIndex, COL_EQUIPMENT_TYPE);
 
                 List<String> rowErrors = new ArrayList<>();
 
@@ -281,6 +311,13 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
                 if (processId == null) {
                     rowErrors.add(String.format("作业[%s]在工序表中不存在", processName));
                 }
+                String equipmentType = null;
+                if (StringUtils.hasText(equipmentTypeText)) {
+                    equipmentType = equipmentTypeTextToValue.get(equipmentTypeText.trim());
+                    if (!StringUtils.hasText(equipmentType)) {
+                        rowErrors.add(String.format("订单生产车间[%s]在数据字典[equipment_type]中不存在", equipmentTypeText));
+                    }
+                }
 
                 if (!rowErrors.isEmpty()) {
                     rowErrorMap.put(r, String.join("; ", rowErrors));
@@ -294,9 +331,12 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
                 record.setMaterialCodeId(materialCodeId);
                 record.setProcessId(processId);
 
-                // 从设备表获取产线类型（equipmentType）
+                // 优先使用Excel中的订单生产车间；未提供时回退为设备类型
                 HnEquipment eq = equipmentMapper.selectById(equipmentId);
-                record.setEquipmentType(eq != null ? eq.getEquipmentType() : null);
+                if (!StringUtils.hasText(equipmentType) && eq != null) {
+                    equipmentType = eq.getEquipmentType();
+                }
+                record.setEquipmentType(equipmentType);
 
                 record.setProductionOrderNo(getStrCell(row, colIndex, COL_PRODUCTION_ORDER_NO));
                 record.setBatchNo(getStrCell(row, colIndex, COL_BATCH_NO));
@@ -547,6 +587,26 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
         List<HnProcess> list = processMapper.selectList(qw);
         return list.stream().filter(p -> StringUtils.hasText(p.getName()))
                 .collect(Collectors.toMap(HnProcess::getName, HnProcess::getId, (a, b) -> a));
+    }
+
+    /** 预加载订单生产车间字典文本/值 -> 字典值 映射 */
+    private Map<String, String> loadEquipmentTypeDictMap() {
+        List<DictModel> list = sysBaseAPI.getDictItems("equipment_type");
+        if (list == null || list.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        Map<String, String> map = new HashMap<>();
+        for (DictModel item : list) {
+            if (item == null || !StringUtils.hasText(item.getValue())) {
+                continue;
+            }
+            String value = item.getValue().trim();
+            map.put(value, value);
+            if (StringUtils.hasText(item.getText())) {
+                map.put(item.getText().trim(), value);
+            }
+        }
+        return map;
     }
 
     // ============ 私有辅助方法 ============

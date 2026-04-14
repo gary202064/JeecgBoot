@@ -59,7 +59,19 @@ export const formSchema: FormSchema[] = [
     dynamicDisabled: ({ values }) => !values.__editMode,
     defaultValue: 'pending',
   },
-  { label: '手工补录单价', field: 'manualPrice', component: 'InputNumber', componentProps: { placeholder: '请输入手工补录单价', precision: 4, min: 0 } },
+  {
+    label: '手工补录单价',
+    field: 'manualPrice',
+    component: 'InputNumber',
+    componentProps: { placeholder: '请输入手工补录单价', precision: 4, min: 0 },
+    dynamicDisabled: ({ values }) => values.calcStatus !== 'manual',
+    dynamicRules: ({ values }) => {
+      if (values.calcStatus === 'manual') {
+        return [{ required: true, message: '计算状态为手工补录时，请输入手工补录单价' }];
+      }
+      return [];
+    },
+  },
 ];
 
 export const superQuerySchema = {
