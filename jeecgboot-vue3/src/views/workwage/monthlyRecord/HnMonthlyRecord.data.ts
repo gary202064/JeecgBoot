@@ -24,6 +24,7 @@ export const searchFormSchema: FormSchema[] = [
 
 export const formSchema: FormSchema[] = [
   { label: '', field: 'id', component: 'Input', show: false },
+  { label: '', field: '__editMode', component: 'Input', show: false },
   { label: '所属年月', field: 'recordMonth', required: true, component: 'Input', componentProps: { placeholder: '请输入所属年月，如：2026-03' } },
   { label: '工人', field: 'workerId', required: true, component: 'JSearchSelect', componentProps: { dict: 'hn_worker,name,id', placeholder: '请选择工人' } },
   { label: '设备', field: 'equipmentId', required: true, component: 'JSearchSelect', componentProps: { dict: 'hn_equipment,equipment_no,id', placeholder: '请选择设备' } },
