@@ -78,7 +78,7 @@ public class HnMonthlyRecordController extends JeecgController<HnMonthlyRecord, 
 	@Operation(summary = "月度加工记录表-编辑")
 	@RequestMapping(value = "/edit", method = {RequestMethod.PUT,RequestMethod.POST})
 	public Result<String> edit(@RequestBody HnMonthlyRecord hnMonthlyRecord) {
-		hnMonthlyRecordService.updateById(hnMonthlyRecord);
+		hnMonthlyRecordService.editRecord(hnMonthlyRecord);
 		return Result.OK("编辑成功!");
 	}
 

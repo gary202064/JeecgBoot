@@ -25,4 +25,11 @@ public interface IHnMonthlyRecordService extends IService<HnMonthlyRecord> {
      * @param manualPrice 手工单价
      */
     void manualSetPrice(Long id, BigDecimal manualPrice);
+
+    /**
+     * 编辑月度加工记录：
+     * 若 calcStatus 为 'pending'，则同时清空 unitPrice、totalAmount、priceSource
+     * @param record 待更新的记录对象
+     */
+    void editRecord(HnMonthlyRecord record);
 }

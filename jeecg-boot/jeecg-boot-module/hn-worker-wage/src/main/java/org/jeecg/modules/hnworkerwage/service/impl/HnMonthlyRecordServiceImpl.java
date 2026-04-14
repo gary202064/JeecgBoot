@@ -1,6 +1,7 @@
 package org.jeecg.modules.hnworkerwage.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.jeecg.modules.hnworkerwage.entity.*;
@@ -132,6 +133,31 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
         update.setPriceSource("manual");
         update.setCalcStatus("manual");
         this.updateById(update);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void editRecord(HnMonthlyRecord record) {
+        if ("pending".equals(record.getCalcStatus())) {
+            // 状态改回待计算，用 UpdateWrapper 显式将三个字段置为 NULL
+            LambdaUpdateWrapper<HnMonthlyRecord> uw = new LambdaUpdateWrapper<>();
+            uw.eq(HnMonthlyRecord::getId, record.getId())
+              .set(HnMonthlyRecord::getCalcStatus, record.getCalcStatus())
+              .set(HnMonthlyRecord::getRecordMonth, record.getRecordMonth())
+              .set(HnMonthlyRecord::getWorkerId, record.getWorkerId())
+              .set(HnMonthlyRecord::getEquipmentId, record.getEquipmentId())
+              .set(HnMonthlyRecord::getEquipmentType, record.getEquipmentType())
+              .set(HnMonthlyRecord::getMaterialCodeId, record.getMaterialCodeId())
+              .set(HnMonthlyRecord::getProcessId, record.getProcessId())
+              .set(HnMonthlyRecord::getQuantity, record.getQuantity())
+              .set(HnMonthlyRecord::getManualPrice, record.getManualPrice())
+              .set(HnMonthlyRecord::getUnitPrice, null)
+              .set(HnMonthlyRecord::getTotalAmount, null)
+              .set(HnMonthlyRecord::getPriceSource, null);
+            this.update(uw);
+        } else {
+            this.updateById(record);
+        }
     }
 
     // ============ 私有辅助方法 ============
