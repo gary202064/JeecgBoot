@@ -102,6 +102,11 @@ public class HnMonthlyRecord implements Serializable {
     @Schema(description = "次品数量")
     private Integer defectQty;
 
+    /** 检验员 */
+    @Excel(name = "检验员", width = 15)
+    @Schema(description = "检验员")
+    private String inspector;
+
     /** 轮废数量 */
     @Excel(name = "轮废数量", width = 12)
     @Schema(description = "轮废数量")
@@ -111,6 +116,11 @@ public class HnMonthlyRecord implements Serializable {
     @Excel(name = "杆废", width = 12)
     @Schema(description = "杆废")
     private Integer rodWasteQty;
+
+    /** 产品名称 */
+    @Excel(name = "产品名称", width = 20)
+    @Schema(description = "产品名称")
+    private String productName;
 
     /** 产品编码 */
     @Excel(name = "产品编码", width = 20)
