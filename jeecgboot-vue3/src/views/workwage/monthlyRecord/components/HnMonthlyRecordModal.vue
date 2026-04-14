@@ -24,7 +24,13 @@
     setModalProps({ confirmLoading: false, showCancelBtn: !!data?.showFooter, showOkBtn: !!data?.showFooter });
     isUpdate.value = !!data?.isUpdate;
     isDetail.value = !!data?.showFooter;
-    if (unref(isUpdate)) { await setFieldsValue({ ...data.record }); }
+    if (unref(isUpdate)) {
+      // 编辑模式：注入 __editMode=true 允许修改计算状态
+      await setFieldsValue({ ...data.record, __editMode: true });
+    } else {
+      // 新增模式：注入 __editMode=false 禁用计算状态，默认值 pending
+      await setFieldsValue({ __editMode: false, calcStatus: 'pending' });
+    }
     setProps({ disabled: !data?.showFooter });
   });
 

@@ -31,6 +31,14 @@ export const formSchema: FormSchema[] = [
   { label: '物料编码', field: 'materialCodeId', required: true, component: 'JSearchSelect', componentProps: { dict: 'hn_material_code,code,id', placeholder: '请选择物料编码' } },
   { label: '工序', field: 'processId', required: true, component: 'JSearchSelect', componentProps: { dict: 'hn_process,name,id', placeholder: '请选择工序' } },
   { label: '合格数量', field: 'quantity', required: true, component: 'InputNumber', componentProps: { placeholder: '请输入合格数量', min: 0 } },
+  {
+    label: '计算状态',
+    field: 'calcStatus',
+    component: 'JDictSelectTag',
+    componentProps: { dictCode: 'calc_status', placeholder: '请选择计算状态' },
+    dynamicDisabled: ({ values }) => !values.__editMode,
+    defaultValue: 'pending',
+  },
   { label: '手工补录单价', field: 'manualPrice', component: 'InputNumber', componentProps: { placeholder: '请输入手工补录单价', precision: 4, min: 0 } },
 ];
 
