@@ -8,6 +8,7 @@ import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.hnworkerwage.entity.HnMonthlyRecord;
 import org.jeecg.modules.hnworkerwage.service.IHnMonthlyRecordService;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -160,13 +161,12 @@ public class HnMonthlyRecordController extends JeecgController<HnMonthlyRecord, 
     /**
       * 通过excel导入数据
     *
-      * @param request
-      * @param response
+      * @param file
       * @return
       */
     @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
-    public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
-        return super.importExcel(request, response, HnMonthlyRecord.class);
+    public Result<?> importExcel(@RequestParam("file") MultipartFile file) {
+        return hnMonthlyRecordService.importMonthlyRecords(file);
     }
 
 }
