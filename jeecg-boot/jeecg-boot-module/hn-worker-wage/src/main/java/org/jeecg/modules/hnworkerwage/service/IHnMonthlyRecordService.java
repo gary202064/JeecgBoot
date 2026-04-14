@@ -15,9 +15,9 @@ public interface IHnMonthlyRecordService extends IService<HnMonthlyRecord> {
 
     /**
      * 触发异步单价计算：对所有 calc_status='pending' 的记录执行单价匹配
-     * @param recordMonth 指定年月（格式 YYYY-MM），为 null 时处理全部 pending 记录
+     * @param docMonth 按单据日期年月过滤（格式 YYYY-MM），为 null 时处理全部 pending 记录
      */
-    void startCalculation(String recordMonth);
+    void startCalculation(String docMonth);
 
     /**
      * 手工补录单价：将指定记录的 manual_price 写入并将 calc_status 置为 'manual'

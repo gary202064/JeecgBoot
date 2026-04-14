@@ -129,8 +129,8 @@ public class HnMonthlyRecordController extends JeecgController<HnMonthlyRecord, 
      */
     @Operation(summary = "月度加工记录表-触发单价计算")
     @PostMapping(value = "/startCalculation")
-    public Result<String> startCalculation(@RequestParam(name = "recordMonth", required = false) String recordMonth) {
-        hnMonthlyRecordService.startCalculation(recordMonth);
+    public Result<String> startCalculation(@RequestParam(name = "docMonth", required = false) String docMonth) {
+        hnMonthlyRecordService.startCalculation(docMonth);
         return Result.OK("计算任务已异步触发，请稍候刷新页面查看结果");
     }
 

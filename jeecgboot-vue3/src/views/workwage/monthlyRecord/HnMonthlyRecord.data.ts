@@ -2,7 +2,6 @@ import { BasicColumn } from '/@/components/Table';
 import { FormSchema } from '/@/components/Table';
 
 export const columns: BasicColumn[] = [
-  { title: '所属年月', align: 'center', dataIndex: 'recordMonth' },
   { title: '工人', align: 'center', dataIndex: 'workerId_dictText' },
   { title: '设备', align: 'center', dataIndex: 'equipmentId_dictText' },
   { title: '产线', align: 'center', dataIndex: 'equipmentType_dictText' },
@@ -25,7 +24,6 @@ export const columns: BasicColumn[] = [
 ];
 
 export const searchFormSchema: FormSchema[] = [
-  { label: '所属年月', field: 'recordMonth', component: 'JInput', colProps: { span: 6 } },
   { label: '工人', field: 'workerId', component: 'JSearchSelect', componentProps: { dict: 'hn_worker,name,id' }, colProps: { span: 6 } },
   { label: '设备', field: 'equipmentId', component: 'JSearchSelect', componentProps: { dict: 'hn_equipment,equipment_no,id' }, colProps: { span: 6 } },
   { label: '计算状态', field: 'calcStatus', component: 'JDictSelectTag', componentProps: { dictCode: 'calc_status', placeholder: '请选择计算状态' }, colProps: { span: 6 } },
@@ -34,7 +32,6 @@ export const searchFormSchema: FormSchema[] = [
 export const formSchema: FormSchema[] = [
   { label: '', field: 'id', component: 'Input', show: false },
   { label: '', field: '__editMode', component: 'Input', show: false },
-  { label: '所属年月', field: 'recordMonth', required: true, component: 'Input', componentProps: { placeholder: '请输入所属年月，如：2026-03' } },
   { label: '工人', field: 'workerId', required: true, component: 'JSearchSelect', componentProps: { dict: 'hn_worker,name,id', placeholder: '请选择工人' } },
   { label: '设备', field: 'equipmentId', required: true, component: 'JSearchSelect', componentProps: { dict: 'hn_equipment,equipment_no,id', placeholder: '请选择设备' } },
   { label: '产线', field: 'equipmentType', required: true, component: 'JDictSelectTag', componentProps: { dictCode: 'equipment_type', placeholder: '请选择产线' } },
@@ -62,7 +59,6 @@ export const formSchema: FormSchema[] = [
 ];
 
 export const superQuerySchema = {
-  recordMonth: { title: '所属年月', order: 0, view: 'text' },
   workerId: { title: '工人', order: 1, view: 'sel_search', dictTable: 'hn_worker', dictText: 'name', dictCode: 'id' },
   equipmentId: { title: '设备', order: 2, view: 'sel_search', dictTable: 'hn_equipment', dictText: 'equipment_no', dictCode: 'id' },
   processId: { title: '工序', order: 3, view: 'sel_search', dictTable: 'hn_process', dictText: 'name', dictCode: 'id' },

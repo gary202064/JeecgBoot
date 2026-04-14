@@ -44,12 +44,12 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
     @Override
     @Async
     @Transactional(rollbackFor = Exception.class)
-    public void startCalculation(String recordMonth) {
+    public void startCalculation(String docMonth) {
         // 查询待计算记录
         LambdaQueryWrapper<HnMonthlyRecord> qw = new LambdaQueryWrapper<>();
         qw.eq(HnMonthlyRecord::getCalcStatus, "pending");
-        if (StringUtils.hasText(recordMonth)) {
-            qw.eq(HnMonthlyRecord::getRecordMonth, recordMonth);
+        if (StringUtils.hasText(docMonth)) {
+            qw.apply("DATE_FORMAT(document_date, '%Y-%m') = {0}", docMonth);
         }
         List<HnMonthlyRecord> records = this.list(qw);
         if (records.isEmpty()) {
@@ -115,7 +115,7 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
                 log.error("月度记录单价计算失败, recordId={}", record.getId(), e);
             }
         }
-        log.info("单价计算完成， recordMonth={}, 处理记录数={}", recordMonth, count);
+        log.info("单价计算完成， docMonth={}, 处理记录数={}", docMonth, count);
     }
 
     @Override
@@ -143,7 +143,6 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
             LambdaUpdateWrapper<HnMonthlyRecord> uw = new LambdaUpdateWrapper<>();
             uw.eq(HnMonthlyRecord::getId, record.getId())
               .set(HnMonthlyRecord::getCalcStatus, record.getCalcStatus())
-              .set(HnMonthlyRecord::getRecordMonth, record.getRecordMonth())
               .set(HnMonthlyRecord::getWorkerId, record.getWorkerId())
               .set(HnMonthlyRecord::getEquipmentId, record.getEquipmentId())
               .set(HnMonthlyRecord::getEquipmentType, record.getEquipmentType())

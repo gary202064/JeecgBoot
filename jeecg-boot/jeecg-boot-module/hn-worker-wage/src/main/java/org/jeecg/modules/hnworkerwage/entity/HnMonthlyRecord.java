@@ -30,12 +30,6 @@ public class HnMonthlyRecord implements Serializable {
     @Schema(description = "主键")
     private Long id;
 
-    /** 所属年月（格式：YYYY-MM） */
-    @Excel(name = "所属年月", width = 15)
-    @Schema(description = "所属年月（格式：YYYY-MM）")
-    @TableField("record_month")
-    private String recordMonth;
-
     /** 导入批次ID */
     @Excel(name = "导入批次ID", width = 15)
     @Schema(description = "导入批次ID")

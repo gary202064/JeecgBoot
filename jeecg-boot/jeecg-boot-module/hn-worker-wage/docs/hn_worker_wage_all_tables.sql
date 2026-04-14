@@ -172,7 +172,6 @@ CREATE TABLE IF NOT EXISTS `hn_import_batch` (
 -- 11. 月度加工记录表
 CREATE TABLE IF NOT EXISTS `hn_monthly_record` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `record_month` varchar(7) NOT NULL COMMENT '所属年月',
   `import_batch_id` bigint DEFAULT NULL COMMENT '导入批次ID',
   `worker_id` bigint NOT NULL COMMENT '工人ID',
   `equipment_id` bigint NOT NULL COMMENT '设备ID',
