@@ -12,14 +12,14 @@ export const columns: BasicColumn[] = [
   { title: '计算单价', align: 'center', dataIndex: 'unitPrice' },
   { title: '总金额', align: 'center', dataIndex: 'totalAmount' },
   { title: '价格来源', align: 'center', dataIndex: 'priceSource' },
-  { title: '计算状态', align: 'center', dataIndex: 'calcStatus' },
+  { title: '计算状态', align: 'center', dataIndex: 'calcStatus_dictText' },
 ];
 
 export const searchFormSchema: FormSchema[] = [
   { label: '所属年月', field: 'recordMonth', component: 'JInput', colProps: { span: 6 } },
   { label: '工人', field: 'workerId', component: 'JSearchSelect', componentProps: { dict: 'hn_worker,name,id' }, colProps: { span: 6 } },
   { label: '设备', field: 'equipmentId', component: 'JSearchSelect', componentProps: { dict: 'hn_equipment,equipment_no,id' }, colProps: { span: 6 } },
-  { label: '计算状态', field: 'calcStatus', component: 'JInput', colProps: { span: 6 } },
+  { label: '计算状态', field: 'calcStatus', component: 'JDictSelectTag', componentProps: { dictCode: 'calc_status', placeholder: '请选择计算状态' }, colProps: { span: 6 } },
 ];
 
 export const formSchema: FormSchema[] = [
@@ -39,5 +39,5 @@ export const superQuerySchema = {
   workerId: { title: '工人', order: 1, view: 'sel_search', dictTable: 'hn_worker', dictText: 'name', dictCode: 'id' },
   equipmentId: { title: '设备', order: 2, view: 'sel_search', dictTable: 'hn_equipment', dictText: 'equipment_no', dictCode: 'id' },
   processId: { title: '工序', order: 3, view: 'sel_search', dictTable: 'hn_process', dictText: 'name', dictCode: 'id' },
-  calcStatus: { title: '计算状态', order: 4, view: 'text' },
+  calcStatus: { title: '计算状态', order: 4, view: 'list', dictCode: 'calc_status' },
 };
