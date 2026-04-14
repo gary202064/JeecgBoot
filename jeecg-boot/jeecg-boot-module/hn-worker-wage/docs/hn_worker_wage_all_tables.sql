@@ -256,16 +256,3 @@ CREATE TABLE IF NOT EXISTS `hn_monthly_summary` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='月度汇总表';
 
--- 15. 设备类型-工序关联表
-CREATE TABLE IF NOT EXISTS `hn_type_process` (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `type_id` varchar(100) NOT NULL COMMENT '设备类型 (数据字典 equipment_type)',
-  `process_id` bigint NOT NULL COMMENT '工序ID',
-  `create_by` varchar(50) DEFAULT NULL COMMENT '创建人',
-  `create_time` datetime DEFAULT NULL COMMENT '创建日期',
-  `update_by` varchar(50) DEFAULT NULL COMMENT '更新人',
-  `update_time` datetime DEFAULT NULL COMMENT '更新日期',
-  `sys_org_code` varchar(64) DEFAULT NULL COMMENT '所属部门',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_type_process` (`type_id`,`process_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='设备类型-工序关联表';

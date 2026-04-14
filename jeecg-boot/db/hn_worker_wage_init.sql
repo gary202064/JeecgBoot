@@ -123,23 +123,7 @@ CREATE TABLE IF NOT EXISTS `hn_material_dimension` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='物料尺寸定义表';
 
 -- ---------------------------------------------------------------------------
--- 表7: hn_type_process（设备类型-工序关联表）
--- ---------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hn_type_process` (
-  `id`             bigint       NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `equipment_type` varchar(100) NOT NULL COMMENT '设备类型 (数据字典 equipment_type)',
-  `process_id`     bigint       NOT NULL COMMENT '关联工序ID (hn_process.id)',
-  `create_by`      varchar(50)  DEFAULT NULL COMMENT '创建人',
-  `create_time`    datetime     DEFAULT NULL COMMENT '创建日期',
-  `update_by`      varchar(50)  DEFAULT NULL COMMENT '更新人',
-  `update_time`    datetime     DEFAULT NULL COMMENT '更新日期',
-  `sys_org_code`   varchar(64)  DEFAULT NULL COMMENT '所属部门',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_type_process` (`equipment_type`, `process_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='设备类型-工序关联表';
-
--- ---------------------------------------------------------------------------
--- 表8: hn_worker_process_ability（工人-工序能力表）
+-- 表7: hn_worker_process_ability（工人-工序能力表）
 -- ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `hn_worker_process_ability` (
   `id`            bigint       NOT NULL AUTO_INCREMENT COMMENT '主键',
@@ -708,26 +692,6 @@ INSERT INTO sys_role_permission (id, role_id, permission_id, data_rule_ids, oper
 INSERT INTO sys_role_permission (id, role_id, permission_id, data_rule_ids, operate_date, operate_ip) SELECT '17750239702951414', 'f6817f48af4fb3af11b9e8bf182f618b', '17750239702951405', NULL, '2026-04-01 00:00:00', '127.0.0.1' WHERE NOT EXISTS (SELECT 1 FROM sys_role_permission WHERE id = '17750239702951414');
 INSERT INTO sys_role_permission (id, role_id, permission_id, data_rule_ids, operate_date, operate_ip) SELECT '17750239702951415', 'f6817f48af4fb3af11b9e8bf182f618b', '17750239702951406', NULL, '2026-04-01 00:00:00', '127.0.0.1' WHERE NOT EXISTS (SELECT 1 FROM sys_role_permission WHERE id = '17750239702951415');
 INSERT INTO sys_role_permission (id, role_id, permission_id, data_rule_ids, operate_date, operate_ip) SELECT '17750239702951416', 'f6817f48af4fb3af11b9e8bf182f618b', '17750239702951407', NULL, '2026-04-01 00:00:00', '127.0.0.1' WHERE NOT EXISTS (SELECT 1 FROM sys_role_permission WHERE id = '17750239702951416');
-
--- =============================================================================
--- 14. 设备类型工序关联管理 (hn_type_process)
--- =============================================================================
-INSERT INTO sys_permission(id, parent_id, name, url, component, component_name, redirect, menu_type, perms, perms_type, sort_no, always_show, icon, is_route, is_leaf, keep_alive, hidden, hide_tab, description, status, del_flag, rule_flag, create_by, create_time, update_by, update_time, internal_or_external)
-SELECT '177502397029515', '177502397029501', '设备类型工序关联管理', '/workwage/hnTypeProcessList', 'workwage/typeProcess/HnTypeProcessList', NULL, NULL, 0, NULL, '1', 14.00, 0, NULL, 1, 1, 1, 0, 0, NULL, '1', 0, 0, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0
-WHERE NOT EXISTS (SELECT 1 FROM sys_permission WHERE id = '177502397029515');
-INSERT INTO sys_permission(id, parent_id, name, url, component, is_route, component_name, redirect, menu_type, perms, perms_type, sort_no, always_show, icon, is_leaf, keep_alive, hidden, hide_tab, description, create_by, create_time, update_by, update_time, del_flag, rule_flag, status, internal_or_external) SELECT '17750239702951502', '177502397029515', '添加设备类型工序关联管理', NULL, NULL, 0, NULL, NULL, 2, 'hnworkerwage:hn_type_process:add', '1', NULL, 0, NULL, 1, 0, 0, 0, NULL, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0, 0, '1', 0 WHERE NOT EXISTS (SELECT 1 FROM sys_permission WHERE id = '17750239702951502');
-INSERT INTO sys_permission(id, parent_id, name, url, component, is_route, component_name, redirect, menu_type, perms, perms_type, sort_no, always_show, icon, is_leaf, keep_alive, hidden, hide_tab, description, create_by, create_time, update_by, update_time, del_flag, rule_flag, status, internal_or_external) SELECT '17750239702951503', '177502397029515', '编辑设备类型工序关联管理', NULL, NULL, 0, NULL, NULL, 2, 'hnworkerwage:hn_type_process:edit', '1', NULL, 0, NULL, 1, 0, 0, 0, NULL, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0, 0, '1', 0 WHERE NOT EXISTS (SELECT 1 FROM sys_permission WHERE id = '17750239702951503');
-INSERT INTO sys_permission(id, parent_id, name, url, component, is_route, component_name, redirect, menu_type, perms, perms_type, sort_no, always_show, icon, is_leaf, keep_alive, hidden, hide_tab, description, create_by, create_time, update_by, update_time, del_flag, rule_flag, status, internal_or_external) SELECT '17750239702951504', '177502397029515', '删除设备类型工序关联管理', NULL, NULL, 0, NULL, NULL, 2, 'hnworkerwage:hn_type_process:delete', '1', NULL, 0, NULL, 1, 0, 0, 0, NULL, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0, 0, '1', 0 WHERE NOT EXISTS (SELECT 1 FROM sys_permission WHERE id = '17750239702951504');
-INSERT INTO sys_permission(id, parent_id, name, url, component, is_route, component_name, redirect, menu_type, perms, perms_type, sort_no, always_show, icon, is_leaf, keep_alive, hidden, hide_tab, description, create_by, create_time, update_by, update_time, del_flag, rule_flag, status, internal_or_external) SELECT '17750239702951505', '177502397029515', '批量删除设备类型工序关联管理', NULL, NULL, 0, NULL, NULL, 2, 'hnworkerwage:hn_type_process:deleteBatch', '1', NULL, 0, NULL, 1, 0, 0, 0, NULL, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0, 0, '1', 0 WHERE NOT EXISTS (SELECT 1 FROM sys_permission WHERE id = '17750239702951505');
-INSERT INTO sys_permission(id, parent_id, name, url, component, is_route, component_name, redirect, menu_type, perms, perms_type, sort_no, always_show, icon, is_leaf, keep_alive, hidden, hide_tab, description, create_by, create_time, update_by, update_time, del_flag, rule_flag, status, internal_or_external) SELECT '17750239702951506', '177502397029515', '导出excel设备类型工序关联管理', NULL, NULL, 0, NULL, NULL, 2, 'hnworkerwage:hn_type_process:exportXls', '1', NULL, 0, NULL, 1, 0, 0, 0, NULL, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0, 0, '1', 0 WHERE NOT EXISTS (SELECT 1 FROM sys_permission WHERE id = '17750239702951506');
-INSERT INTO sys_permission(id, parent_id, name, url, component, is_route, component_name, redirect, menu_type, perms, perms_type, sort_no, always_show, icon, is_leaf, keep_alive, hidden, hide_tab, description, create_by, create_time, update_by, update_time, del_flag, rule_flag, status, internal_or_external) SELECT '17750239702951507', '177502397029515', '导入excel设备类型工序关联管理', NULL, NULL, 0, NULL, NULL, 2, 'hnworkerwage:hn_type_process:importExcel', '1', NULL, 0, NULL, 1, 0, 0, 0, NULL, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0, 0, '1', 0 WHERE NOT EXISTS (SELECT 1 FROM sys_permission WHERE id = '17750239702951507');
-INSERT INTO sys_role_permission (id, role_id, permission_id, data_rule_ids, operate_date, operate_ip) SELECT '17750239702951509', 'f6817f48af4fb3af11b9e8bf182f618b', '177502397029515', NULL, '2026-04-01 00:00:00', '127.0.0.1' WHERE NOT EXISTS (SELECT 1 FROM sys_role_permission WHERE id = '17750239702951509');
-INSERT INTO sys_role_permission (id, role_id, permission_id, data_rule_ids, operate_date, operate_ip) SELECT '17750239702951511', 'f6817f48af4fb3af11b9e8bf182f618b', '17750239702951502', NULL, '2026-04-01 00:00:00', '127.0.0.1' WHERE NOT EXISTS (SELECT 1 FROM sys_role_permission WHERE id = '17750239702951511');
-INSERT INTO sys_role_permission (id, role_id, permission_id, data_rule_ids, operate_date, operate_ip) SELECT '17750239702951512', 'f6817f48af4fb3af11b9e8bf182f618b', '17750239702951503', NULL, '2026-04-01 00:00:00', '127.0.0.1' WHERE NOT EXISTS (SELECT 1 FROM sys_role_permission WHERE id = '17750239702951512');
-INSERT INTO sys_role_permission (id, role_id, permission_id, data_rule_ids, operate_date, operate_ip) SELECT '17750239702951513', 'f6817f48af4fb3af11b9e8bf182f618b', '17750239702951504', NULL, '2026-04-01 00:00:00', '127.0.0.1' WHERE NOT EXISTS (SELECT 1 FROM sys_role_permission WHERE id = '17750239702951513');
-INSERT INTO sys_role_permission (id, role_id, permission_id, data_rule_ids, operate_date, operate_ip) SELECT '17750239702951514', 'f6817f48af4fb3af11b9e8bf182f618b', '17750239702951505', NULL, '2026-04-01 00:00:00', '127.0.0.1' WHERE NOT EXISTS (SELECT 1 FROM sys_role_permission WHERE id = '17750239702951514');
-INSERT INTO sys_role_permission (id, role_id, permission_id, data_rule_ids, operate_date, operate_ip) SELECT '17750239702951515', 'f6817f48af4fb3af11b9e8bf182f618b', '17750239702951506', NULL, '2026-04-01 00:00:00', '127.0.0.1' WHERE NOT EXISTS (SELECT 1 FROM sys_role_permission WHERE id = '17750239702951515');
-INSERT INTO sys_role_permission (id, role_id, permission_id, data_rule_ids, operate_date, operate_ip) SELECT '17750239702951516', 'f6817f48af4fb3af11b9e8bf182f618b', '17750239702951507', NULL, '2026-04-01 00:00:00', '127.0.0.1' WHERE NOT EXISTS (SELECT 1 FROM sys_role_permission WHERE id = '17750239702951516');
 
 -- =============================================================================
 -- 15. 物料尺寸定义管理 (hn_material_dimension)

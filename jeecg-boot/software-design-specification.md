@@ -95,7 +95,6 @@ hn_product (产品)
             └── hn_material_override_price (物料覆盖单价) [material_code_id → hn_material_code.id]
 
 hn_process (工序)
-    └── hn_type_process (设备类型-工序关联) [process_id → hn_process.id]
     └── hn_base_price (基础单价) [process_id → hn_process.id]
     └── hn_complex_price (复合定价) [process_id → hn_process.id]
     └── hn_worker_process_ability (工人工序能力) [process_id → hn_process.id]
@@ -259,31 +258,7 @@ CREATE TABLE `hn_material_dimension` (
 
 ---
 
-#### 表7：设备类型-工序关联表 (`hn_type_process`)
-
-```sql
-CREATE TABLE `hn_type_process` (
-  `id`             bigint      NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `equipment_type` varchar(100) NOT NULL COMMENT '设备类型 (数据字典 equipment_type)',
-  `process_id`     bigint      NOT NULL COMMENT '关联工序ID (hn_process.id)',
-  `create_by`      varchar(50) DEFAULT NULL COMMENT '创建人',
-  `create_time`    datetime    DEFAULT NULL COMMENT '创建日期',
-  `update_by`      varchar(50) DEFAULT NULL COMMENT '更新人',
-  `update_time`    datetime    DEFAULT NULL COMMENT '更新日期',
-  `sys_org_code`   varchar(64) DEFAULT NULL COMMENT '所属部门',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_type_process` (`equipment_type`, `process_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='设备类型-工序关联表';
-```
-
-> **字段变更说明（v2.0）**：`type_id` → `equipment_type`，DDL：
-> ```sql
-> ALTER TABLE `hn_type_process` CHANGE COLUMN `type_id` `equipment_type` VARCHAR(100) NOT NULL COMMENT '设备类型 (数据字典 equipment_type)';
-> ```
-
----
-
-#### 表8：工人-工序能力表 (`hn_worker_process_ability`)
+#### 表7：工人-工序能力表 (`hn_worker_process_ability`)
 
 ```sql
 CREATE TABLE `hn_worker_process_ability` (
@@ -632,10 +607,6 @@ ALTER TABLE `hn_equipment`
 
 -- 基础单价表：字段重命名
 ALTER TABLE `hn_base_price`
-  CHANGE COLUMN `type_id` `equipment_type` VARCHAR(100) NOT NULL COMMENT '设备类型 (数据字典 equipment_type)';
-
--- 设备类型-工序关联表：字段重命名
-ALTER TABLE `hn_type_process`
   CHANGE COLUMN `type_id` `equipment_type` VARCHAR(100) NOT NULL COMMENT '设备类型 (数据字典 equipment_type)';
 
 -- 物料覆盖单价表：字段重命名
