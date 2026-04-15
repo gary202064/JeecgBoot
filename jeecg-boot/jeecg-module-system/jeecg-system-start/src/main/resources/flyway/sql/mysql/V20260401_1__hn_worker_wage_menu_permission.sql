@@ -435,34 +435,34 @@ SELECT '17750239702951016', 'f6817f48af4fb3af11b9e8bf182f618b', '177502397029510
 WHERE NOT EXISTS (SELECT 1 FROM sys_role_permission WHERE id = '17750239702951016');
 
 
--- 10. 月度加工记录管理 (hn_monthly_record)
+-- 10. 工序汇报记录 (hn_monthly_record)
 
 INSERT INTO sys_permission(id, parent_id, name, url, component, component_name, redirect, menu_type, perms, perms_type, sort_no, always_show, icon, is_route, is_leaf, keep_alive, hidden, hide_tab, description, status, del_flag, rule_flag, create_by, create_time, update_by, update_time, internal_or_external)
-SELECT '177502397029511', '177502397029501', '月度加工记录管理', '/workwage/hnMonthlyRecordList', 'workwage/monthlyRecord/HnMonthlyRecordList', NULL, NULL, 0, NULL, '1', 10.00, 0, NULL, 1, 1, 1, 0, 0, NULL, '1', 0, 0, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0
+SELECT '177502397029511', '177502397029501', '工序汇报记录', '/workwage/hnMonthlyRecordList', 'workwage/monthlyRecord/HnMonthlyRecordList', NULL, NULL, 0, NULL, '1', 10.00, 0, NULL, 1, 1, 1, 0, 0, NULL, '1', 0, 0, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0
 WHERE NOT EXISTS (SELECT 1 FROM sys_permission WHERE id = '177502397029511');
 
 INSERT INTO sys_permission(id, parent_id, name, url, component, is_route, component_name, redirect, menu_type, perms, perms_type, sort_no, always_show, icon, is_leaf, keep_alive, hidden, hide_tab, description, create_by, create_time, update_by, update_time, del_flag, rule_flag, status, internal_or_external)
-SELECT '17750239702951102', '177502397029511', '添加月度加工记录管理', NULL, NULL, 0, NULL, NULL, 2, 'hnworkerwage:hn_monthly_record:add', '1', NULL, 0, NULL, 1, 0, 0, 0, NULL, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0, 0, '1', 0
+SELECT '17750239702951102', '177502397029511', '添加工序汇报记录', NULL, NULL, 0, NULL, NULL, 2, 'hnworkerwage:hn_monthly_record:add', '1', NULL, 0, NULL, 1, 0, 0, 0, NULL, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0, 0, '1', 0
 WHERE NOT EXISTS (SELECT 1 FROM sys_permission WHERE id = '17750239702951102');
 
 INSERT INTO sys_permission(id, parent_id, name, url, component, is_route, component_name, redirect, menu_type, perms, perms_type, sort_no, always_show, icon, is_leaf, keep_alive, hidden, hide_tab, description, create_by, create_time, update_by, update_time, del_flag, rule_flag, status, internal_or_external)
-SELECT '17750239702951103', '177502397029511', '编辑月度加工记录管理', NULL, NULL, 0, NULL, NULL, 2, 'hnworkerwage:hn_monthly_record:edit', '1', NULL, 0, NULL, 1, 0, 0, 0, NULL, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0, 0, '1', 0
+SELECT '17750239702951103', '177502397029511', '编辑工序汇报记录', NULL, NULL, 0, NULL, NULL, 2, 'hnworkerwage:hn_monthly_record:edit', '1', NULL, 0, NULL, 1, 0, 0, 0, NULL, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0, 0, '1', 0
 WHERE NOT EXISTS (SELECT 1 FROM sys_permission WHERE id = '17750239702951103');
 
 INSERT INTO sys_permission(id, parent_id, name, url, component, is_route, component_name, redirect, menu_type, perms, perms_type, sort_no, always_show, icon, is_leaf, keep_alive, hidden, hide_tab, description, create_by, create_time, update_by, update_time, del_flag, rule_flag, status, internal_or_external)
-SELECT '17750239702951104', '177502397029511', '删除月度加工记录管理', NULL, NULL, 0, NULL, NULL, 2, 'hnworkerwage:hn_monthly_record:delete', '1', NULL, 0, NULL, 1, 0, 0, 0, NULL, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0, 0, '1', 0
+SELECT '17750239702951104', '177502397029511', '删除工序汇报记录', NULL, NULL, 0, NULL, NULL, 2, 'hnworkerwage:hn_monthly_record:delete', '1', NULL, 0, NULL, 1, 0, 0, 0, NULL, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0, 0, '1', 0
 WHERE NOT EXISTS (SELECT 1 FROM sys_permission WHERE id = '17750239702951104');
 
 INSERT INTO sys_permission(id, parent_id, name, url, component, is_route, component_name, redirect, menu_type, perms, perms_type, sort_no, always_show, icon, is_leaf, keep_alive, hidden, hide_tab, description, create_by, create_time, update_by, update_time, del_flag, rule_flag, status, internal_or_external)
-SELECT '17750239702951105', '177502397029511', '批量删除月度加工记录管理', NULL, NULL, 0, NULL, NULL, 2, 'hnworkerwage:hn_monthly_record:deleteBatch', '1', NULL, 0, NULL, 1, 0, 0, 0, NULL, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0, 0, '1', 0
+SELECT '17750239702951105', '177502397029511', '批量删除工序汇报记录', NULL, NULL, 0, NULL, NULL, 2, 'hnworkerwage:hn_monthly_record:deleteBatch', '1', NULL, 0, NULL, 1, 0, 0, 0, NULL, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0, 0, '1', 0
 WHERE NOT EXISTS (SELECT 1 FROM sys_permission WHERE id = '17750239702951105');
 
 INSERT INTO sys_permission(id, parent_id, name, url, component, is_route, component_name, redirect, menu_type, perms, perms_type, sort_no, always_show, icon, is_leaf, keep_alive, hidden, hide_tab, description, create_by, create_time, update_by, update_time, del_flag, rule_flag, status, internal_or_external)
-SELECT '17750239702951106', '177502397029511', '导出excel月度加工记录管理', NULL, NULL, 0, NULL, NULL, 2, 'hnworkerwage:hn_monthly_record:exportXls', '1', NULL, 0, NULL, 1, 0, 0, 0, NULL, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0, 0, '1', 0
+SELECT '17750239702951106', '177502397029511', '导出excel工序汇报记录', NULL, NULL, 0, NULL, NULL, 2, 'hnworkerwage:hn_monthly_record:exportXls', '1', NULL, 0, NULL, 1, 0, 0, 0, NULL, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0, 0, '1', 0
 WHERE NOT EXISTS (SELECT 1 FROM sys_permission WHERE id = '17750239702951106');
 
 INSERT INTO sys_permission(id, parent_id, name, url, component, is_route, component_name, redirect, menu_type, perms, perms_type, sort_no, always_show, icon, is_leaf, keep_alive, hidden, hide_tab, description, create_by, create_time, update_by, update_time, del_flag, rule_flag, status, internal_or_external)
-SELECT '17750239702951107', '177502397029511', '导入excel月度加工记录管理', NULL, NULL, 0, NULL, NULL, 2, 'hnworkerwage:hn_monthly_record:importExcel', '1', NULL, 0, NULL, 1, 0, 0, 0, NULL, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0, 0, '1', 0
+SELECT '17750239702951107', '177502397029511', '导入excel工序汇报记录', NULL, NULL, 0, NULL, NULL, 2, 'hnworkerwage:hn_monthly_record:importExcel', '1', NULL, 0, NULL, 1, 0, 0, 0, NULL, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0, 0, '1', 0
 WHERE NOT EXISTS (SELECT 1 FROM sys_permission WHERE id = '17750239702951107');
 
 INSERT INTO sys_role_permission (id, role_id, permission_id, data_rule_ids, operate_date, operate_ip)

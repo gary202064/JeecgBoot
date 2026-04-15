@@ -26,6 +26,8 @@ export const columns: BasicColumn[] = [
 ];
 
 export const searchFormSchema: FormSchema[] = [
+  { label: '生产订单编号', field: 'productionOrderNo', component: 'Input', componentProps: { placeholder: '请输入生产订单编号' }, colProps: { span: 6 } },
+  { label: '单据日期', field: 'documentDateRange', component: 'RangePicker', componentProps: { valueType: 'Date' }, colProps: { span: 6 } },
   { label: '工人', field: 'workerId', component: 'JSearchSelect', componentProps: { dict: 'hn_worker,name,id' }, colProps: { span: 6 } },
   { label: '设备', field: 'equipmentId', component: 'JSearchSelect', componentProps: { dict: 'hn_equipment,equipment_no,id' }, colProps: { span: 6 } },
   { label: '计算状态', field: 'calcStatus', component: 'JDictSelectTag', componentProps: { dictCode: 'calc_status', placeholder: '请选择计算状态' }, colProps: { span: 6 } },

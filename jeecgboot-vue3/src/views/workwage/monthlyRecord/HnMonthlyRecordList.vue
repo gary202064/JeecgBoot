@@ -47,8 +47,21 @@
   const importLoading = ref(false);
 
   const { prefixCls, tableContext, onExportXls } = useListPage({
-    tableProps: { title: '月度加工记录', api: list, columns, canResize: true, formConfig: { schemas: searchFormSchema, autoSubmitOnEnter: true, showAdvancedButton: true }, actionColumn: { width: 120, fixed: 'right' }, beforeFetch: (params) => Object.assign(params, queryParam) },
-    exportConfig: { name: '月度加工记录', url: getExportUrl, params: queryParam },
+    tableProps: {
+      title: '工序汇报记录',
+      api: list,
+      columns,
+      canResize: true,
+      formConfig: {
+        schemas: searchFormSchema,
+        autoSubmitOnEnter: true,
+        showAdvancedButton: true,
+        fieldMapToTime: [['documentDateRange', ['documentDate_begin', 'documentDate_end'], 'YYYY-MM-DD']],
+      },
+      actionColumn: { width: 120, fixed: 'right' },
+      beforeFetch: (params) => Object.assign(params, queryParam),
+    },
+    exportConfig: { name: '工序汇报记录', url: getExportUrl, params: queryParam },
     importConfig: { url: getImportUrl, success: handleSuccess },
   });
 
@@ -126,7 +139,7 @@
     createConfirm({
       iconType: 'info',
       title: '确认计算',
-      content: '确定要开始计算当前查询条件下的月度加工费用吗？此操作可能需要一些时间。',
+      content: '确定要开始计算当前查询条件下的工序汇报费用吗？此操作可能需要一些时间。',
       okText: '确认',
       cancelText: '取消',
       onOk: async () => {
