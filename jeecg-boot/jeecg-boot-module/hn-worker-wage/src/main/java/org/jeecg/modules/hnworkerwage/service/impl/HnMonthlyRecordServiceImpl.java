@@ -174,7 +174,7 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
         update.setManualPrice(manualPrice);
         update.setUnitPrice(manualPrice);
         update.setTotalAmount(totalAmount);
-        update.setPriceSource("manua");
+        update.setPriceSource("manual");
         update.setCalcStatus("manual");
         this.updateById(update);
     }
@@ -217,7 +217,7 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
               .set(HnMonthlyRecord::getManualPrice, record.getManualPrice())
               .set(HnMonthlyRecord::getUnitPrice, record.getManualPrice())
               .set(HnMonthlyRecord::getTotalAmount, totalAmount)
-              .set(HnMonthlyRecord::getPriceSource, "manua");
+              .set(HnMonthlyRecord::getPriceSource, "manual");
             this.update(uw);
             return;
         }
