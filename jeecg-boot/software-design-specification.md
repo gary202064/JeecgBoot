@@ -165,8 +165,7 @@ CREATE TABLE `hn_process` (
 CREATE TABLE `hn_equipment` (
   `id`               bigint      NOT NULL AUTO_INCREMENT COMMENT '主键',
   `equipment_no`     varchar(50) NOT NULL COMMENT '设备编号',
-  `equipment_type`   varchar(100) NOT NULL COMMENT '设备类型 (数据字典 equipment_type)',
-  `production_line`  varchar(100) NOT NULL COMMENT '所属产线 (数据字典 production_line)',
+  `equipment_type`   varchar(100) NOT NULL COMMENT '产线 (数据字典 equipment_type)',
   `status`           tinyint      DEFAULT '1' COMMENT '状态 (数据字典 status，1-正常/0-停用)',
   `create_by`        varchar(50)  DEFAULT NULL COMMENT '创建人',
   `create_time`      datetime     DEFAULT NULL COMMENT '创建日期',

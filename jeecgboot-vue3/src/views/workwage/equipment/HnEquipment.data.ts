@@ -16,14 +16,9 @@ export const columns: BasicColumn[] = [
     dataIndex: 'equipmentNo',
   },
   {
-    title: '设备类型',
+    title: '产线',
     align: 'center',
     dataIndex: 'equipmentType_dictText',
-  },
-  {
-    title: '所属产线',
-    align: 'center',
-    dataIndex: 'productionLine_dictText',
   },
   {
     title: '状态',
@@ -52,17 +47,10 @@ export const searchFormSchema: FormSchema[] = [
     colProps: { span: 6 },
   },
   {
-    label: '设备类型',
+    label: '产线',
     field: 'equipmentType',
     component: 'JDictSelectTag',
     componentProps: { dictCode: 'equipment_type' },
-    colProps: { span: 6 },
-  },
-  {
-    label: '所属产线',
-    field: 'productionLine',
-    component: 'JDictSelectTag',
-    componentProps: { dictCode: 'production_line' },
     colProps: { span: 6 },
   },
   {
@@ -97,18 +85,11 @@ export const formSchema: FormSchema[] = [
     componentProps: { placeholder: '请输入设备编号' },
   },
   {
-    label: '设备类型',
+    label: '产线',
     field: 'equipmentType',
     required: true,
     component: 'JDictSelectTag',
-    componentProps: { dictCode: 'equipment_type', placeholder: '请选择设备类型' },
-  },
-  {
-    label: '所属产线',
-    field: 'productionLine',
-    required: true,
-    component: 'JDictSelectTag',
-    componentProps: { dictCode: 'production_line', placeholder: '请选择所属产线' },
+    componentProps: { dictCode: 'equipment_type', placeholder: '请选择产线' },
   },
   {
     label: '状态',
@@ -123,7 +104,6 @@ export const formSchema: FormSchema[] = [
 export const superQuerySchema = {
   equipmentName: { title: '设备名称', order: 0, view: 'text' },
   equipmentNo: { title: '设备编号', order: 1, view: 'text' },
-  equipmentType: { title: '设备类型', order: 2, view: 'list', dictCode: 'equipment_type' },
-  productionLine: { title: '所属产线', order: 3, view: 'list', dictCode: 'production_line' },
+  equipmentType: { title: '产线', order: 2, view: 'list', dictCode: 'equipment_type' },
   status: { title: '状态', order: 4, view: 'list', dictCode: 'status' },
 };

@@ -37,18 +37,12 @@ public class HnEquipment implements Serializable {
 	@Excel(name = "设备编号", width = 15)
     @Schema(description = "设备编号")
 	private java.lang.String equipmentNo;
-	/**设备类型*/
-	@Excel(name = "设备类型", width = 15, dicCode = "equipment_type")
-    @Schema(description = "设备类型")
+	/**产线*/
+	@Excel(name = "产线", width = 15, dicCode = "equipment_type")
+    @Schema(description = "产线")
     @Dict(dicCode = "equipment_type")
 	@TableField("equipment_type")
 	private java.lang.String equipmentType;
-	/**所属产线*/
-	@Excel(name = "所属产线", width = 15, dicCode = "production_line")
-    @Schema(description = "所属产线")
-    @Dict(dicCode = "production_line")
-	@TableField("production_line")
-	private java.lang.String productionLine;
 	/**状态*/
 	@Excel(name = "状态", width = 15, dicCode = "status")
     @Schema(description = "状态")
