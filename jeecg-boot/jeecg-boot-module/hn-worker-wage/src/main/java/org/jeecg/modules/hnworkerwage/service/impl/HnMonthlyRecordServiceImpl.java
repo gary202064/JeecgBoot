@@ -193,7 +193,7 @@ public class HnMonthlyRecordServiceImpl extends ServiceImpl<HnMonthlyRecordMappe
               .set(HnMonthlyRecord::getMaterialCodeId, record.getMaterialCodeId())
               .set(HnMonthlyRecord::getProcessId, record.getProcessId())
               .set(HnMonthlyRecord::getQuantity, record.getQuantity())
-              .set(HnMonthlyRecord::getManualPrice, record.getManualPrice())
+              .set(HnMonthlyRecord::getManualPrice, null)
               .set(HnMonthlyRecord::getUnitPrice, null)
               .set(HnMonthlyRecord::getTotalAmount, null)
               .set(HnMonthlyRecord::getPriceSource, null);

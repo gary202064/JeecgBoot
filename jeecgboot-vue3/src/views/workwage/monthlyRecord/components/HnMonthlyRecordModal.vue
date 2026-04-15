@@ -39,6 +39,10 @@
   async function handleSubmit(v) {
     try {
       let values = await validate();
+      // 计算状态为待计算时，同步清空手工补录单价
+      if (values.calcStatus === 'pending') {
+        values.manualPrice = null;
+      }
       setModalProps({ confirmLoading: true });
       await saveOrUpdate(values, isUpdate.value);
       closeModal();
