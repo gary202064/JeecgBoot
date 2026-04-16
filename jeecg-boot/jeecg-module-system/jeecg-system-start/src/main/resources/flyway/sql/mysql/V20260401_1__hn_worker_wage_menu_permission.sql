@@ -382,60 +382,7 @@ WHERE NOT EXISTS (SELECT 1 FROM sys_role_permission WHERE id = '1775023970295081
 
 
 
--- 9. 导入批次管理 (hn_import_batch)
-
-INSERT INTO sys_permission(id, parent_id, name, url, component, component_name, redirect, menu_type, perms, perms_type, sort_no, always_show, icon, is_route, is_leaf, keep_alive, hidden, hide_tab, description, status, del_flag, rule_flag, create_by, create_time, update_by, update_time, internal_or_external)
-SELECT '177502397029510', '177502397029501', '导入批次管理', '/workwage/hnImportBatchList', 'workwage/importBatch/HnImportBatchList', NULL, NULL, 0, NULL, '1', 9.00, 0, NULL, 1, 1, 1, 0, 0, NULL, '1', 0, 0, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0
-WHERE NOT EXISTS (SELECT 1 FROM sys_permission WHERE id = '177502397029510');
-
-INSERT INTO sys_permission(id, parent_id, name, url, component, is_route, component_name, redirect, menu_type, perms, perms_type, sort_no, always_show, icon, is_leaf, keep_alive, hidden, hide_tab, description, create_by, create_time, update_by, update_time, del_flag, rule_flag, status, internal_or_external)
-SELECT '17750239702951002', '177502397029510', '添加导入批次管理', NULL, NULL, 0, NULL, NULL, 2, 'hnworkerwage:hn_import_batch:add', '1', NULL, 0, NULL, 1, 0, 0, 0, NULL, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0, 0, '1', 0
-WHERE NOT EXISTS (SELECT 1 FROM sys_permission WHERE id = '17750239702951002');
-
-INSERT INTO sys_permission(id, parent_id, name, url, component, is_route, component_name, redirect, menu_type, perms, perms_type, sort_no, always_show, icon, is_leaf, keep_alive, hidden, hide_tab, description, create_by, create_time, update_by, update_time, del_flag, rule_flag, status, internal_or_external)
-SELECT '17750239702951003', '177502397029510', '编辑导入批次管理', NULL, NULL, 0, NULL, NULL, 2, 'hnworkerwage:hn_import_batch:edit', '1', NULL, 0, NULL, 1, 0, 0, 0, NULL, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0, 0, '1', 0
-WHERE NOT EXISTS (SELECT 1 FROM sys_permission WHERE id = '17750239702951003');
-
-INSERT INTO sys_permission(id, parent_id, name, url, component, is_route, component_name, redirect, menu_type, perms, perms_type, sort_no, always_show, icon, is_leaf, keep_alive, hidden, hide_tab, description, create_by, create_time, update_by, update_time, del_flag, rule_flag, status, internal_or_external)
-SELECT '17750239702951004', '177502397029510', '删除导入批次管理', NULL, NULL, 0, NULL, NULL, 2, 'hnworkerwage:hn_import_batch:delete', '1', NULL, 0, NULL, 1, 0, 0, 0, NULL, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0, 0, '1', 0
-WHERE NOT EXISTS (SELECT 1 FROM sys_permission WHERE id = '17750239702951004');
-
-INSERT INTO sys_permission(id, parent_id, name, url, component, is_route, component_name, redirect, menu_type, perms, perms_type, sort_no, always_show, icon, is_leaf, keep_alive, hidden, hide_tab, description, create_by, create_time, update_by, update_time, del_flag, rule_flag, status, internal_or_external)
-SELECT '17750239702951005', '177502397029510', '批量删除导入批次管理', NULL, NULL, 0, NULL, NULL, 2, 'hnworkerwage:hn_import_batch:deleteBatch', '1', NULL, 0, NULL, 1, 0, 0, 0, NULL, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0, 0, '1', 0
-WHERE NOT EXISTS (SELECT 1 FROM sys_permission WHERE id = '17750239702951005');
-
-INSERT INTO sys_permission(id, parent_id, name, url, component, is_route, component_name, redirect, menu_type, perms, perms_type, sort_no, always_show, icon, is_leaf, keep_alive, hidden, hide_tab, description, create_by, create_time, update_by, update_time, del_flag, rule_flag, status, internal_or_external)
-SELECT '17750239702951006', '177502397029510', '导出excel导入批次管理', NULL, NULL, 0, NULL, NULL, 2, 'hnworkerwage:hn_import_batch:exportXls', '1', NULL, 0, NULL, 1, 0, 0, 0, NULL, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0, 0, '1', 0
-WHERE NOT EXISTS (SELECT 1 FROM sys_permission WHERE id = '17750239702951006');
-
-INSERT INTO sys_permission(id, parent_id, name, url, component, is_route, component_name, redirect, menu_type, perms, perms_type, sort_no, always_show, icon, is_leaf, keep_alive, hidden, hide_tab, description, create_by, create_time, update_by, update_time, del_flag, rule_flag, status, internal_or_external)
-SELECT '17750239702951007', '177502397029510', '导入excel导入批次管理', NULL, NULL, 0, NULL, NULL, 2, 'hnworkerwage:hn_import_batch:importExcel', '1', NULL, 0, NULL, 1, 0, 0, 0, NULL, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0, 0, '1', 0
-WHERE NOT EXISTS (SELECT 1 FROM sys_permission WHERE id = '17750239702951007');
-
-INSERT INTO sys_role_permission (id, role_id, permission_id, data_rule_ids, operate_date, operate_ip)
-SELECT '17750239702951009', 'f6817f48af4fb3af11b9e8bf182f618b', '177502397029510', NULL, '2026-04-01 00:00:00', '127.0.0.1'
-WHERE NOT EXISTS (SELECT 1 FROM sys_role_permission WHERE id = '17750239702951009');
-INSERT INTO sys_role_permission (id, role_id, permission_id, data_rule_ids, operate_date, operate_ip)
-SELECT '17750239702951011', 'f6817f48af4fb3af11b9e8bf182f618b', '17750239702951002', NULL, '2026-04-01 00:00:00', '127.0.0.1'
-WHERE NOT EXISTS (SELECT 1 FROM sys_role_permission WHERE id = '17750239702951011');
-INSERT INTO sys_role_permission (id, role_id, permission_id, data_rule_ids, operate_date, operate_ip)
-SELECT '17750239702951012', 'f6817f48af4fb3af11b9e8bf182f618b', '17750239702951003', NULL, '2026-04-01 00:00:00', '127.0.0.1'
-WHERE NOT EXISTS (SELECT 1 FROM sys_role_permission WHERE id = '17750239702951012');
-INSERT INTO sys_role_permission (id, role_id, permission_id, data_rule_ids, operate_date, operate_ip)
-SELECT '17750239702951013', 'f6817f48af4fb3af11b9e8bf182f618b', '17750239702951004', NULL, '2026-04-01 00:00:00', '127.0.0.1'
-WHERE NOT EXISTS (SELECT 1 FROM sys_role_permission WHERE id = '17750239702951013');
-INSERT INTO sys_role_permission (id, role_id, permission_id, data_rule_ids, operate_date, operate_ip)
-SELECT '17750239702951014', 'f6817f48af4fb3af11b9e8bf182f618b', '17750239702951005', NULL, '2026-04-01 00:00:00', '127.0.0.1'
-WHERE NOT EXISTS (SELECT 1 FROM sys_role_permission WHERE id = '17750239702951014');
-INSERT INTO sys_role_permission (id, role_id, permission_id, data_rule_ids, operate_date, operate_ip)
-SELECT '17750239702951015', 'f6817f48af4fb3af11b9e8bf182f618b', '17750239702951006', NULL, '2026-04-01 00:00:00', '127.0.0.1'
-WHERE NOT EXISTS (SELECT 1 FROM sys_role_permission WHERE id = '17750239702951015');
-INSERT INTO sys_role_permission (id, role_id, permission_id, data_rule_ids, operate_date, operate_ip)
-SELECT '17750239702951016', 'f6817f48af4fb3af11b9e8bf182f618b', '17750239702951007', NULL, '2026-04-01 00:00:00', '127.0.0.1'
-WHERE NOT EXISTS (SELECT 1 FROM sys_role_permission WHERE id = '17750239702951016');
-
-
--- 10. 工序汇报记录 (hn_monthly_record)
+-- 9. 工序汇报记录 (hn_monthly_record)
 
 INSERT INTO sys_permission(id, parent_id, name, url, component, component_name, redirect, menu_type, perms, perms_type, sort_no, always_show, icon, is_route, is_leaf, keep_alive, hidden, hide_tab, description, status, del_flag, rule_flag, create_by, create_time, update_by, update_time, internal_or_external)
 SELECT '177502397029511', '177502397029501', '工序汇报记录', '/workwage/hnMonthlyRecordList', 'workwage/monthlyRecord/HnMonthlyRecordList', NULL, NULL, 0, NULL, '1', 10.00, 0, NULL, 1, 1, 1, 0, 0, NULL, '1', 0, 0, 'admin', '2026-04-01 00:00:00', NULL, NULL, 0

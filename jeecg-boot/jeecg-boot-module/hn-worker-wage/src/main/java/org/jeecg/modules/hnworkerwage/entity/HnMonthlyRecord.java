@@ -29,11 +29,6 @@ public class HnMonthlyRecord implements Serializable {
     @Schema(description = "主键")
     private Long id;
 
-    /** 导入批次ID */
-    @Excel(name = "导入批次ID", width = 15)
-    @Schema(description = "导入批次ID")
-    private Long importBatchId;
-
     /** 工人ID */
     @Excel(name = "操作工姓名", width = 15, dictTable = "hn_worker", dicCode = "id", dicText = "name")
     @Schema(description = "工人ID")

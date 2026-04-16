@@ -402,35 +402,12 @@ CREATE TABLE `hn_price_change_log` (
 
 ---
 
-#### 表13：导入批次表 (`hn_import_batch`)
-
-```sql
-CREATE TABLE `hn_import_batch` (
-  `id`            bigint      NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `file_name`     varchar(200) NOT NULL COMMENT '上传的原始文件名',
-  `year_month`    varchar(7)   NOT NULL COMMENT '所属年月（格式：YYYY-MM）',
-  `record_count`  int          DEFAULT '0' COMMENT '总记录数',
-  `success_count` int          DEFAULT '0' COMMENT '成功导入数',
-  `fail_count`    int          DEFAULT '0' COMMENT '失败记录数',
-  `status`        varchar(50)  DEFAULT 'processing' COMMENT '批次状态（processing-处理中/success-成功/partial-部分成功/failed-失败）',
-  `create_by`     varchar(50)  DEFAULT NULL COMMENT '创建人（导入操作人）',
-  `create_time`   datetime     DEFAULT NULL COMMENT '导入时间',
-  `update_by`     varchar(50)  DEFAULT NULL COMMENT '更新人',
-  `update_time`   datetime     DEFAULT NULL COMMENT '更新日期',
-  `sys_org_code`  varchar(64)  DEFAULT NULL COMMENT '所属部门',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='导入批次表';
-```
-
----
-
-#### 表14：月度加工记录表 (`hn_monthly_record`)
+#### 表13：月度加工记录表 (`hn_monthly_record`)
 
 ```sql
 CREATE TABLE `hn_monthly_record` (
   `id`               bigint        NOT NULL AUTO_INCREMENT COMMENT '主键',
   `year_month`       varchar(7)    NOT NULL COMMENT '所属年月（格式：YYYY-MM）',
-  `import_batch_id`  bigint        DEFAULT NULL COMMENT '导入批次ID (hn_import_batch.id)',
   `worker_id`        bigint        NOT NULL COMMENT '工人ID (hn_worker.id)',
   `equipment_id`     bigint        NOT NULL COMMENT '设备ID (hn_equipment.id)',
   `line_id`          varchar(100)  DEFAULT NULL COMMENT '产线 (数据字典 production_line，从设备冗余)',
@@ -453,7 +430,7 @@ CREATE TABLE `hn_monthly_record` (
 
 ---
 
-#### 表15：月度汇总表 (`hn_monthly_summary`)
+#### 表14：月度汇总表 (`hn_monthly_summary`)
 
 ```sql
 CREATE TABLE `hn_monthly_summary` (

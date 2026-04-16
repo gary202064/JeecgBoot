@@ -152,27 +152,9 @@ CREATE TABLE IF NOT EXISTS `hn_complex_price` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='复合定价表 (第2级)';
 
--- 10. 导入批次表
-CREATE TABLE IF NOT EXISTS `hn_import_batch` (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `file_name` varchar(200) DEFAULT NULL COMMENT '文件名',
-  `record_month` varchar(7) DEFAULT NULL COMMENT '所属年月',
-  `record_count` int DEFAULT NULL COMMENT '总记录数',
-  `success_count` int DEFAULT NULL COMMENT '成功数',
-  `fail_count` int DEFAULT NULL COMMENT '失败数',
-  `status` enum('SUCCESS','PARTIAL','FAILED') DEFAULT NULL COMMENT '状态',
-  `create_by` varchar(50) DEFAULT NULL COMMENT '创建人',
-  `create_time` datetime DEFAULT NULL COMMENT '创建日期',
-  `update_by` varchar(50) DEFAULT NULL COMMENT '更新人',
-  `update_time` datetime DEFAULT NULL COMMENT '更新日期',
-  `sys_org_code` varchar(64) DEFAULT NULL COMMENT '所属部门',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='导入批次表';
-
--- 11. 月度加工记录表
+-- 10. 月度加工记录表
 CREATE TABLE IF NOT EXISTS `hn_monthly_record` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `import_batch_id` bigint DEFAULT NULL COMMENT '导入批次ID',
   `worker_id` bigint NOT NULL COMMENT '工人ID',
   `equipment_id` bigint NOT NULL COMMENT '设备ID',
   `line_id` varchar(100) NOT NULL COMMENT '产线 (数据字典 production_line)',
